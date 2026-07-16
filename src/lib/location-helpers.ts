@@ -2,7 +2,10 @@ import type { Coordinates } from '$lib/Coordinates';
 import type { StopGroup } from '$lib/StopGroup';
 import type { Station } from '$lib/Station';
 
-export function computeStopsDistances(stops: StopGroup[], userCoordinates: GeolocationCoordinates | null = null) {
+export function computeStopsDistances(
+	stops: StopGroup[],
+	userCoordinates: GeolocationCoordinates | null = null,
+) {
 	const distances = new Map<string, number>();
 
 	// Default to Piazza Dante Trento
@@ -17,7 +20,10 @@ export function computeStopsDistances(stops: StopGroup[], userCoordinates: Geolo
 	return distances;
 }
 
-export function computeStationsDistances(stations: Station[], userCoordinates: GeolocationCoordinates) {
+export function computeStationsDistances(
+	stations: Station[],
+	userCoordinates: GeolocationCoordinates,
+) {
 	const distances = new Map<string, number>();
 
 	for (const station of stations) {
@@ -27,14 +33,17 @@ export function computeStationsDistances(stations: Station[], userCoordinates: G
 	return distances;
 }
 
-export function distance(userCoordinates: GeolocationCoordinates | null, stopCoordinates: Coordinates) {
+export function distance(
+	userCoordinates: GeolocationCoordinates | null,
+	stopCoordinates: Coordinates,
+) {
 	if (userCoordinates == null) {
 		return Infinity;
 	}
 
 	return Math.sqrt(
 		Math.pow(userCoordinates.latitude - stopCoordinates.latitude, 2) +
-		Math.pow(userCoordinates.longitude - stopCoordinates.longitude, 2)
+			Math.pow(userCoordinates.longitude - stopCoordinates.longitude, 2),
 	);
 }
 
@@ -47,10 +56,10 @@ export function getCurrentPosition(): Promise<GeolocationPosition> {
 export function handleGeolocationError(err: unknown) {
 	if (err instanceof GeolocationPositionError && err.code == err.PERMISSION_DENIED) {
 		alert(
-			'La richiesta di accesso alla posizione è stata negata. Verifica le autorizzazioni al sito nelle impostazioni del tuo browser.'
+			'La richiesta di accesso alla posizione è stata negata. Verifica le autorizzazioni al sito nelle impostazioni del tuo browser.',
 		);
 	} else {
-		alert('Si è verificato un errore durante l\'ottenimento della posizione');
+		alert("Si è verificato un errore durante l'ottenimento della posizione");
 	}
 }
 

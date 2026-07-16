@@ -11,7 +11,7 @@
 		computeStationsDistances,
 		getCurrentPosition,
 		handleGeolocationError,
-		isGeolocationGranted
+		isGeolocationGranted,
 	} from '$lib/location-helpers';
 	import { getDefaultTab, setDefaultTab, type Tab } from '$lib/storage/stations-default-tab';
 
@@ -28,22 +28,23 @@
 
 	const favorites: FavoriteStations = getContext('favorites');
 
-	let sortedStations = $derived(data.stations
-		// Sort by distance
-		.toSorted((a, b) => (distances.get(a.id) ?? Infinity) - (distances.get(b.id) ?? Infinity))
+	let sortedStations = $derived(
+		data.stations
+			// Sort by distance
+			.toSorted((a, b) => (distances.get(a.id) ?? Infinity) - (distances.get(b.id) ?? Infinity)),
 	);
 
-	let filteredStations = $derived(data.stations
-		.filter((station) =>
-			// Filter by railway. Evaluates to true if no route is selected
-			(selectedRailway == '' || station.railways.includes(selectedRailway)) &&
-			// Filter by search term on the name. Evaluates to true if no search term is present
-			(searchTerm == '' ||
-				station.name.toLowerCase().includes(searchTerm.toLowerCase())
-			)
-		));
+	let filteredStations = $derived(
+		data.stations.filter(
+			(station) =>
+				// Filter by railway. Evaluates to true if no route is selected
+				(selectedRailway == '' || station.railways.includes(selectedRailway)) &&
+				// Filter by search term on the name. Evaluates to true if no search term is present
+				(searchTerm == '' || station.name.toLowerCase().includes(searchTerm.toLowerCase())),
+		),
+	);
 
-	let favoriteStations = $derived(data.stations.filter(x => favorites.value.includes(x.id)));
+	let favoriteStations = $derived(data.stations.filter((x) => favorites.value.includes(x.id)));
 
 	onMount(async () => {
 		if (await isGeolocationGranted()) {
@@ -80,12 +81,13 @@
 
 	export const snapshot = {
 		capture: () => ({
-			searchTerm, selectedRailway
+			searchTerm,
+			selectedRailway,
 		}),
 		restore: (values) => {
 			searchTerm = values.searchTerm;
 			selectedRailway = values.selectedRailway;
-		}
+		},
 	};
 </script>
 
@@ -94,8 +96,8 @@
 </svelte:head>
 
 <header class="text-center">
-	<h1 class="font-semibold text-4xl">Tra quanto passa in...</h1>
-	<div class="mt-2 text-neutral-500 text-lg">Ferrovia del Brennero e della Valsugana</div>
+	<h1 class="text-4xl font-semibold">Tra quanto passa in...</h1>
+	<div class="mt-2 text-lg text-neutral-500">Ferrovia del Brennero e della Valsugana</div>
 </header>
 
 <main>
@@ -103,38 +105,51 @@
 		<ModesSwitch isBus={false} />
 	</div>
 
-	<div class="mt-8 flex max-sm:flex-wrap gap-2 xs:gap-3" style="scrollbar-width: none">
-		<TabButton text="📍 Più vicine" isSelected={activeTab === 'all'} onClick={() => switchTab('all')} />
-		<TabButton text="🔍 Cerca" isSelected={activeTab === 'filter'} onClick={() => switchTab('filter')} />
-		<TabButton text="⭐️ Preferiti" isSelected={activeTab === 'favorites'} onClick={() => switchTab('favorites')} />
+	<div class="mt-8 flex gap-2 max-sm:flex-wrap xs:gap-3" style="scrollbar-width: none">
+		<TabButton
+			text="📍 Più vicine"
+			isSelected={activeTab === 'all'}
+			onClick={() => switchTab('all')}
+		/>
+		<TabButton
+			text="🔍 Cerca"
+			isSelected={activeTab === 'filter'}
+			onClick={() => switchTab('filter')}
+		/>
+		<TabButton
+			text="⭐️ Preferiti"
+			isSelected={activeTab === 'favorites'}
+			onClick={() => switchTab('favorites')}
+		/>
 	</div>
 
 	{#if activeTab === 'all' || activeTab === 'filter'}
-		<div class="{activeTab === 'all' && (showGeolocationButton || loadingGeolocationData) ? 'mt-4' : 'mt-8'}">
+		<div
+			class={activeTab === 'all' && (showGeolocationButton || loadingGeolocationData)
+				? 'mt-4'
+				: 'mt-8'}
+		>
 			{#if activeTab === 'all' && showGeolocationButton}
-				<button onclick={updatePosition}
-				        in:slide
-				        class="block px-3.5 py-2 w-full text-center">
+				<button onclick={updatePosition} in:slide class="block w-full px-3.5 py-2 text-center">
 					⚠️ Consenti accesso alla posizione
 				</button>
 			{:else if activeTab === 'all' && loadingGeolocationData}
-				<div class="px-3.5 py-2 w-full text-center">
-					⏳ Caricamento posizione...
-				</div>
+				<div class="w-full px-3.5 py-2 text-center">⏳ Caricamento posizione...</div>
 			{/if}
 
 			{#if activeTab === 'filter'}
-				<div class="mt-4 flex max-sm:flex-col gap-x-4 gap-y-3">
+				<div class="mt-4 flex gap-x-4 gap-y-3 max-sm:flex-col">
 					<input
 						type="search"
 						placeholder="🔍 Cerca stazione..."
-						class="w-full basis-1/2 px-3.5 py-2 rounded-md bg-neutral-800 text-neutral-100 focus:outline-2 focus:outline-neutral-700"
+						class="w-full basis-1/2 rounded-md bg-neutral-800 px-3.5 py-2 text-neutral-100 focus:outline-2 focus:outline-neutral-700"
 						bind:value={searchTerm}
 					/>
 
 					<select
 						bind:value={selectedRailway}
-						class="w-full basis-1/2 py-2 px-3.5 rounded-md bg-neutral-800 text-neutral-100 focus:outline-2 focus:outline-neutral-700">
+						class="w-full basis-1/2 rounded-md bg-neutral-800 px-3.5 py-2 text-neutral-100 focus:outline-2 focus:outline-neutral-700"
+					>
 						<option value="">🚂 Filtra per ferrovia</option>
 						{#each data.railways as railway (railway)}
 							<option value={railway}>{railway}</option>
@@ -143,15 +158,20 @@
 				</div>
 
 				{#if searchTerm || selectedRailway}
-					<button class="w-full mt-4 px-3.5 py-2 rounded-md bg-neutral-800 hover:bg-neutral-700"
-					        onclick={() => { searchTerm = ''; selectedRailway = ''; }}>
+					<button
+						class="mt-4 w-full rounded-md bg-neutral-800 px-3.5 py-2 hover:bg-neutral-700"
+						onclick={() => {
+							searchTerm = '';
+							selectedRailway = '';
+						}}
+					>
 						❌ Rimuovi filtri
 					</button>
 				{/if}
 			{/if}
 
-			<div class="mt-4 text-lg grid xs:grid-cols-2 gap-4">
-				{#each (activeTab === 'all' ? sortedStations : filteredStations) as station (station.id)}
+			<div class="mt-4 grid gap-4 text-lg xs:grid-cols-2">
+				{#each activeTab === 'all' ? sortedStations : filteredStations as station (station.id)}
 					<StationBlock {station} />
 				{/each}
 			</div>
@@ -159,16 +179,18 @@
 	{:else}
 		<div class="mt-8">
 			{#if favoriteStations.length === 0}
-				<p class="mb-2 text-neutral-500 text-center">
+				<p class="mb-2 text-center text-neutral-500">
 					Premi l'icona della stella su una stazione per aggiungerla ai preferiti.
 				</p>
 			{/if}
 
-			<div class="text-lg grid xs:grid-cols-2 gap-4">
+			<div class="grid gap-4 text-lg xs:grid-cols-2">
 				{#each favoriteStations as station (station.id)}
-					<div class="flex shrink-0"
-					     animate:flip={{duration: 500, delay: 1000}}
-					     out:fade={{delay: 1000, duration: 100}}>
+					<div
+						class="flex shrink-0"
+						animate:flip={{ duration: 500, delay: 1000 }}
+						out:fade={{ delay: 1000, duration: 100 }}
+					>
 						<StationBlock {station} />
 					</div>
 				{/each}
@@ -177,8 +199,11 @@
 	{/if}
 </main>
 
-<footer class="mb-12 mt-14 text-center">
-	<a class="px-3 py-2 rounded-md no-underline bg-neutral-800 hover:bg-neutral-700" href={resolve('/info')}>
+<footer class="mt-14 mb-12 text-center">
+	<a
+		class="rounded-md bg-neutral-800 px-3 py-2 no-underline hover:bg-neutral-700"
+		href={resolve('/info')}
+	>
 		ℹ️ Informazioni
 	</a>
 </footer>

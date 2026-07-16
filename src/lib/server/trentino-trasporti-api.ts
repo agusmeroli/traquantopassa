@@ -48,18 +48,21 @@ export interface ApiStopTime {
 }
 
 function filterStops(apiStops: ApiStop[]) {
-	return apiStops.filter(stop =>
-		// Check the stopcode format to avoid stuff like Funivia Trento-Sardagna
-		/^[0-9]+[a-z-]*$/.test(stop.stopCode) &&
-		// Ensure the stop has routes and it's not disuesed
-		stop.routes &&
-
-		(stop.town === 'Trento' || stop.town === 'Lavis' || (
-			// Some stops in Trento are not tagged with a town, so we use a
-			// box check to ensure they are in Trento or lavis
-			stop.town === null &&
-			stop.stopLat > 46 && stop.stopLon > 11.04 &&
-			stop.stopLat < 46.1815 && stop.stopLon < 11.2))
+	return apiStops.filter(
+		(stop) =>
+			// Check the stopcode format to avoid stuff like Funivia Trento-Sardagna
+			/^[0-9]+[a-z-]*$/.test(stop.stopCode) &&
+			// Ensure the stop has routes and it's not disuesed
+			stop.routes &&
+			(stop.town === 'Trento' ||
+				stop.town === 'Lavis' ||
+				// Some stops in Trento are not tagged with a town, so we use a
+				// box check to ensure they are in Trento or lavis
+				(stop.town === null &&
+					stop.stopLat > 46 &&
+					stop.stopLon > 11.04 &&
+					stop.stopLat < 46.1815 &&
+					stop.stopLon < 11.2)),
 	);
 }
 
@@ -71,9 +74,9 @@ export async function getStops() {
 
 	const res = await fetch(BASE_URL + path, {
 		headers: {
-			'Authorization': 'Basic ' + BASIC_AUTH
+			Authorization: 'Basic ' + BASIC_AUTH,
 		},
-		signal: AbortSignal.timeout(10 * 1000)
+		signal: AbortSignal.timeout(10 * 1000),
 	});
 
 	const data: ApiStop[] = await res.json();
@@ -91,9 +94,9 @@ export async function getRoutes() {
 
 	const res = await fetch(BASE_URL + path, {
 		headers: {
-			'Authorization': 'Basic ' + BASIC_AUTH
+			Authorization: 'Basic ' + BASIC_AUTH,
 		},
-		signal: AbortSignal.timeout(10 * 1000)
+		signal: AbortSignal.timeout(10 * 1000),
 	});
 
 	const data: ApiRoute[] = await res.json();
@@ -111,9 +114,9 @@ export async function getTrips(stopId: number, limit: number) {
 
 	const res = await fetch(BASE_URL + path, {
 		headers: {
-			'Authorization': 'Basic ' + BASIC_AUTH
+			Authorization: 'Basic ' + BASIC_AUTH,
 		},
-		signal: AbortSignal.timeout(6 * 1000)
+		signal: AbortSignal.timeout(6 * 1000),
 	});
 
 	const data: ApiTrip[] = await res.json();

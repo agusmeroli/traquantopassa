@@ -13,7 +13,8 @@
 	onMount(() => {
 		// On load, show the last passed stop in the middle so it's easier to see.
 		// In case no live data is available, just have the current stop in the middle.
-		const stopNumber = trip.delay === null ? trip.userStopSequenceNumber : trip.currentStopSequenceNumber;
+		const stopNumber =
+			trip.delay === null ? trip.userStopSequenceNumber : trip.currentStopSequenceNumber;
 		const elementToScroll = stopElements[stopNumber - 1];
 		if (elementToScroll) {
 			elementToScroll.scrollIntoView({ block: 'center' });
@@ -23,8 +24,8 @@
 
 <!-- This wrapper is needed to be able to add a bottom padding and avoid the slide transition jerkiness -->
 <div class="pt-1 pb-3">
-	<div class="rounded-lg bg-neutral-800 border border-neutral-700">
-		<div class="h-40 py-3 overflow-y-auto px-4 flex flex-col gap-y-2.5">
+	<div class="rounded-lg border border-neutral-700 bg-neutral-800">
+		<div class="flex h-40 flex-col gap-y-2.5 overflow-y-auto px-4 py-3">
 			<!-- eslint-disable-next-line svelte/require-each-key -->
 			{#each trip.stopTimes as stopTime, i}
 				{@const wasPassed = i < trip.currentStopSequenceNumber}
@@ -35,7 +36,9 @@
 
 					<div class="relative flex flex-col items-center">
 						<span
-							class="relative z-10 size-4 rounded-full {wasPassed ? 'border-[1.5px] border-neutral-100': 'bg-neutral-100'}"
+							class="relative z-10 size-4 rounded-full {wasPassed
+								? 'border-[1.5px] border-neutral-100'
+								: 'bg-neutral-100'}"
 							style:background-color={wasPassed ? trip.routeColor : ''}
 						></span>
 
@@ -47,7 +50,7 @@
 						{/if}
 					</div>
 
-					<div class="whitespace-nowrap leading-none">
+					<div class="leading-none whitespace-nowrap">
 						{#if i === trip.userStopSequenceNumber - 1}
 							<span class="font-semibold">La tua fermata 📍</span>
 						{:else}

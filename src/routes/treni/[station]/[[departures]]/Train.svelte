@@ -18,33 +18,38 @@
 	function toggle() {
 		expandedTrain.id = expanded ? null : train.id;
 	}
-
 </script>
 
-<div class="flex items-center gap-x-3 sm:gap-x-4 mb-2 cursor-pointer"
-     role="button" aria-expanded={expanded}
-     onclick={() => toggle()} tabindex="0"
-     onkeydown={(e) => (e.key === 'Enter' || e.key === ' ' ? toggle() : null)}>
+<div
+	class="mb-2 flex cursor-pointer items-center gap-x-3 sm:gap-x-4"
+	role="button"
+	aria-expanded={expanded}
+	onclick={() => toggle()}
+	tabindex="0"
+	onkeydown={(e) => (e.key === 'Enter' || e.key === ' ' ? toggle() : null)}
+>
 	<div
-		class="h-10 w-16 sm:w-20 bg-neutral-600 shrink-0 flex justify-center items-center font-semibold text-lg rounded-md"
+		class="flex h-10 w-16 shrink-0 items-center justify-center rounded-md bg-neutral-600 text-lg font-semibold sm:w-20"
 	>
 		{train.time}
 	</div>
-	<div class="grow whitespace-nowrap overflow-hidden">
-		<span class="block leading-tight text-lg font-medium text-ellipsis overflow-hidden whitespace-nowrap">
+	<div class="grow overflow-hidden whitespace-nowrap">
+		<span
+			class="block overflow-hidden text-lg leading-tight font-medium text-ellipsis whitespace-nowrap"
+		>
 			{#if train.icon}
 				{#await import(`$lib/assets/${train.icon}.svg`) then { default: src }}
 					<img
-						class="inline-block -mt-1 w-[22px] h-[22px]"
+						class="-mt-1 inline-block h-[22px] w-[22px]"
 						{src}
-						alt="{train.category}"
-						title="{train.category}"
+						alt={train.category}
+						title={train.category}
 					/>
 				{/await}
 			{/if}
-			{ train.destination }
+			{train.destination}
 		</span>
-		<span class="block text-xs text-neutral-500 text-ellipsis overflow-hidden whitespace-nowrap">
+		<span class="block overflow-hidden text-xs text-ellipsis whitespace-nowrap text-neutral-500">
 			{#if train.isIncomplete}
 				<span>⚠️ </span>
 			{/if}
@@ -57,21 +62,25 @@
 				<span class="font-semibold text-orange-400">Sostituito da bus</span> •
 			{/if}
 			{#if train.platform}
-				<span class="font-bold">Binario { train.platform }</span> •
+				<span class="font-bold">Binario {train.platform}</span> •
 			{/if}
-			{ train.carrier } { train.number }
+			{train.carrier}
+			{train.number}
 			{#if train.category && !train.icon}
-				• { train.category }
+				• {train.category}
 			{/if}
 		</span>
 	</div>
-	<div class="text-right font-semibold whitespace-nowrap text-red-600" class:text-xl={train.isDelayed}>
-		{ train.delay }
+	<div
+		class="text-right font-semibold whitespace-nowrap text-red-600"
+		class:text-xl={train.isDelayed}
+	>
+		{train.delay}
 	</div>
 </div>
 
 {#if expanded}
-	<div transition:slide={{ duration: 300}}>
+	<div transition:slide={{ duration: 300 }}>
 		<TrainDetail {train} />
 	</div>
 {/if}

@@ -1,45 +1,47 @@
 @import 'tailwindcss';
 
 @theme {
-  --font-sans: Inter Variable, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+	--font-sans:
+		Inter Variable, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+		'Segoe UI Symbol', 'Noto Color Emoji';
 
-  --animate-train: 2s train infinite step-end; /* train departing */
-  --animate-spin-forward: 1s spin-forward 1;
-  --animate-spin-backward: 1s spin-backward 1;
+	--animate-train: 2s train infinite step-end; /* train departing */
+	--animate-spin-forward: 1s spin-forward 1;
+	--animate-spin-backward: 1s spin-backward 1;
 
-  --text-mid: 0.9375rem;
+	--text-mid: 0.9375rem;
 
-  --breakpoint-xs: 420px;
+	--breakpoint-xs: 420px;
 
-  @keyframes train {
-    0% {
-      margin-left: 0;
-    }
-    50% {
-      margin-left: 5px;
-    }
-    100% {
-      margin-left: 0;
-    }
-  }
+	@keyframes train {
+		0% {
+			margin-left: 0;
+		}
+		50% {
+			margin-left: 5px;
+		}
+		100% {
+			margin-left: 0;
+		}
+	}
 
-  @keyframes spin-forward {
-    0% {
-      rotate: 0deg;
-    }
-    100% {
-      rotate: 360deg;
-    }
-  }
+	@keyframes spin-forward {
+		0% {
+			rotate: 0deg;
+		}
+		100% {
+			rotate: 360deg;
+		}
+	}
 
-  @keyframes spin-backward {
-    0% {
-      rotate: 0deg;
-    }
-    100% {
-      rotate: -360deg;
-    }
-  }
+	@keyframes spin-backward {
+		0% {
+			rotate: 0deg;
+		}
+		100% {
+			rotate: -360deg;
+		}
+	}
 }
 
 /*
@@ -51,29 +53,29 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentcolor);
-  }
+	*,
+	::after,
+	::before,
+	::backdrop,
+	::file-selector-button {
+		border-color: var(--color-gray-200, currentcolor);
+	}
 }
 
 @layer base {
-  html {
-    scrollbar-gutter: stable;
-  }
+	html {
+		scrollbar-gutter: stable;
+	}
 
-  body {
-    @apply bg-neutral-900 text-white;
-  }
+	body {
+		@apply bg-neutral-900 text-white;
+	}
 
-  a {
-    @apply underline;
-  }
+	a {
+		@apply underline;
+	}
 
-  p {
-    @apply mt-4;
-  }
+	p {
+		@apply mt-4;
+	}
 }

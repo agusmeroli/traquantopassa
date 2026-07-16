@@ -6,7 +6,6 @@ interface LazyStation extends Omit<Station, 'id'> {
 	id: string | null;
 }
 
-
 const stationMap = new Map<string, Station | LazyStation>();
 
 async function getStationMap() {
@@ -27,7 +26,7 @@ async function getStationMap() {
 			slug: station.slug,
 			name: station.name,
 			coordinates: station.coordinates,
-			railways: []
+			railways: [],
 		} satisfies LazyStation);
 	}
 

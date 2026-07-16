@@ -36,7 +36,7 @@ export async function getTrips(stop: Stop): Promise<CachedItem<StopDirection>> {
 
 	const direction = {
 		name: directionName(stop),
-		trips
+		trips,
 	} as StopDirection;
 
 	cachedItem = new CachedItem(direction);
@@ -48,69 +48,72 @@ export async function getTrips(stop: Stop): Promise<CachedItem<StopDirection>> {
 }
 
 async function mapApiTrips(apiTrips: api.ApiTrip[], routes: Route[], userStopId: number) {
-	return Promise.all(apiTrips.map(async trip => {
-		const route = routes.find(r => r.id === trip.routeId)!;
+	return Promise.all(
+		apiTrips.map(async (trip) => {
+			const route = routes.find((r) => r.id === trip.routeId)!;
 
-		// Compute wait time in minutes
-		const expectedTime = new Date(trip.oraArrivoEffettivaAFermataSelezionata);
-		let minutes = Math.ceil((expectedTime.getTime() - Date.now()) / 1000 / 60);
-		if (minutes < 0) {
-			minutes = 0;
-		}
+			// Compute wait time in minutes
+			const expectedTime = new Date(trip.oraArrivoEffettivaAFermataSelezionata);
+			let minutes = Math.ceil((expectedTime.getTime() - Date.now()) / 1000 / 60);
+			if (minutes < 0) {
+				minutes = 0;
+			}
 
-		const delay = trip.delay;
+			const delay = trip.delay;
 
-		const currentStopSequenceNumber = trip.lastSequenceDetection;
+			const currentStopSequenceNumber = trip.lastSequenceDetection;
 
-		// Check if the last update of real-time data isn't recent enough
-		let isOutdated = false;
-		if (delay != null) {
-			const lastEventDate = new Date(trip.lastEventRecivedAt);
-			isOutdated = (Date.now() - lastEventDate.getTime()) > outdatedDataThresholdMillis;
-		}
+			// Check if the last update of real-time data isn't recent enough
+			let isOutdated = false;
+			if (delay != null) {
+				const lastEventDate = new Date(trip.lastEventRecivedAt);
+				isOutdated = Date.now() - lastEventDate.getTime() > outdatedDataThresholdMillis;
+			}
 
-		// Check if the trip will end at the current user stop
-		const endOfRoute = trip.stopTimes.at(-1)!;
-		let isEndOfRouteForUser = endOfRoute.stopId == userStopId;
-		// If this route is a circular route, also make sure that this trip is
-		// for an arrival at the current user stop and not a departure from the stop.
-		// We use two strategies, in this order:
-		// 1. When live data is available, detect if the bus is already beyond the first stop
-		// 2. Check if the expected time at the current stop matches the time of the last stop of the trip
-		if (isEndOfRouteForUser && trip.stopTimes[0].stopId == endOfRoute.stopId) {
-			isEndOfRouteForUser = currentStopSequenceNumber > 1
-				|| formatTime(expectedTime) == endOfRoute.arrivalTime;
-		}
+			// Check if the trip will end at the current user stop
+			const endOfRoute = trip.stopTimes.at(-1)!;
+			let isEndOfRouteForUser = endOfRoute.stopId == userStopId;
+			// If this route is a circular route, also make sure that this trip is
+			// for an arrival at the current user stop and not a departure from the stop.
+			// We use two strategies, in this order:
+			// 1. When live data is available, detect if the bus is already beyond the first stop
+			// 2. Check if the expected time at the current stop matches the time of the last stop of the trip
+			if (isEndOfRouteForUser && trip.stopTimes[0].stopId == endOfRoute.stopId) {
+				isEndOfRouteForUser =
+					currentStopSequenceNumber > 1 || formatTime(expectedTime) == endOfRoute.arrivalTime;
+			}
 
-		const userStopSequenceNumber = isEndOfRouteForUser ?
-			trip.stopTimes.length :
-			trip.stopTimes.find((stop) => stop.stopId == userStopId)!.stopSequence;
+			const userStopSequenceNumber = isEndOfRouteForUser
+				? trip.stopTimes.length
+				: trip.stopTimes.find((stop) => stop.stopId == userStopId)!.stopSequence;
 
-		// Add timestamp to the trip ID since there could be multiple trips with the same ID (e.g. hourly trips)
-		const id = trip.tripId + '-' + new Date(trip.oraArrivoProgrammataAFermataSelezionata).getTime();
+			// Add timestamp to the trip ID since there could be multiple trips with the same ID (e.g. hourly trips)
+			const id =
+				trip.tripId + '-' + new Date(trip.oraArrivoProgrammataAFermataSelezionata).getTime();
 
-		const stopTimes = trip.stopTimes.map((stopTime) => {
+			const stopTimes = trip.stopTimes.map((stopTime) => {
+				return {
+					name: getStopName(stopTime.stopId),
+					// Time is returned with seconds that are always 00 so we omit them
+					time: stopTime.arrivalTime.substring(0, 5),
+				} satisfies StopTime as StopTime;
+			});
+
 			return {
-				name: getStopName(stopTime.stopId),
-				// Time is returned with seconds that are always 00 so we omit them
-				time: stopTime.arrivalTime.substring(0, 5)
-			} satisfies StopTime as StopTime;
-		});
-
-		return {
-			id,
-			routeName: route.name,
-			routeColor: route.color,
-			destination: trip.tripHeadsign,
-			minutes,
-			delay,
-			currentStopSequenceNumber,
-			userStopSequenceNumber,
-			isOutdated,
-			isEndOfRouteForUser,
-			stopTimes
-		} satisfies Trip as Trip;
-	}));
+				id,
+				routeName: route.name,
+				routeColor: route.color,
+				destination: trip.tripHeadsign,
+				minutes,
+				delay,
+				currentStopSequenceNumber,
+				userStopSequenceNumber,
+				isOutdated,
+				isEndOfRouteForUser,
+				stopTimes,
+			} satisfies Trip as Trip;
+		}),
+	);
 }
 
 function directionName(stop: Stop): string {

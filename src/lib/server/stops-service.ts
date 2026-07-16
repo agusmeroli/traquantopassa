@@ -7,7 +7,7 @@ import customSlugs from '$lib/server/custom-slugs';
 import customStopNames from '$lib/server/custom-stop-names';
 
 const cache = new NodeCache({
-	stdTTL: 24 * 60 * 60 // 24 hours
+	stdTTL: 24 * 60 * 60, // 24 hours
 });
 
 const stopGroupsCacheKey = 'stop-groups';
@@ -42,18 +42,16 @@ export async function getStopGroups() {
 		newStopNamesCache[apiStop.stopId] = customStopNames[code] ?? apiStop.stopName;
 
 		// Find existing stop group with the same stop code
-		const existing = stopGroups.find(sg =>
-			sg.code === code
-		);
+		const existing = stopGroups.find((sg) => sg.code === code);
 
 		if (existing) {
 			existing.stops.push(stop);
-			apiStop.routes.forEach(r => existing.routeIds.add(r.routeId));
+			apiStop.routes.forEach((r) => existing.routeIds.add(r.routeId));
 			existing.coordinates = calculateCoordinates(existing.stops);
 		} else {
 			const stopGroup = createStopGroup(code, apiStop);
 			stopGroup.stops.push(stop);
-			apiStop.routes.forEach(r => stopGroup.routeIds.add(r.routeId));
+			apiStop.routes.forEach((r) => stopGroup.routeIds.add(r.routeId));
 			stopGroup.coordinates = calculateCoordinates(stopGroup.stops);
 			stopGroups.push(stopGroup);
 		}
@@ -71,7 +69,7 @@ export async function getStopGroups() {
 
 export async function getStopGroupBySlug(slug: string) {
 	const stopGroups = await getStopGroups();
-	return stopGroups.find(sg => sg.slugs.includes(slug));
+	return stopGroups.find((sg) => sg.slugs.includes(slug));
 }
 
 function getCode(apiStop: api.ApiStop) {
@@ -85,8 +83,8 @@ function createStop(apiStop: api.ApiStop): Stop {
 		code: apiStop.stopCode,
 		coordinates: {
 			latitude: apiStop.stopLat,
-			longitude: apiStop.stopLon
-		}
+			longitude: apiStop.stopLon,
+		},
 	};
 }
 
@@ -109,7 +107,7 @@ function createStopGroup(code: string, apiStop: api.ApiStop): StopGroup {
 		slugs,
 		coordinates: null!, // will be filled later
 		stops: [],
-		routeIds: new Set()
+		routeIds: new Set(),
 	};
 }
 
@@ -119,6 +117,6 @@ function calculateCoordinates(stops: Stop[]) {
 
 	return {
 		latitude: lat,
-		longitude: lon
+		longitude: lon,
 	} as Coordinates;
 }

@@ -7,29 +7,29 @@
 </svelte:head>
 
 <header>
-	<h1 class="font-semibold text-4xl">Tra quanto passa</h1>
+	<h1 class="text-4xl font-semibold">Tra quanto passa</h1>
 </header>
 
 <main class="my-8">
 	<p>
-		I dati degli autobus mostrati sul sito sono forniti da <strong>Trentino Trasporti</strong>. Se perdi l'autobus non è
-		colpa mia. Se mancano i dati in tempo reale non è colpa mia.
+		I dati degli autobus mostrati sul sito sono forniti da <strong>Trentino Trasporti</strong>. Se
+		perdi l'autobus non è colpa mia. Se mancano i dati in tempo reale non è colpa mia.
 	</p>
 
 	<p>
-		I dati sui treni sono forniti da <strong>Rete Ferroviaria Italiana</strong> (RFI) e sono gli stessi mostrati nelle
-		stazioni ferroviarie. Se sono sbagliati non è colpa mia.
+		I dati sui treni sono forniti da <strong>Rete Ferroviaria Italiana</strong> (RFI) e sono gli stessi
+		mostrati nelle stazioni ferroviarie. Se sono sbagliati non è colpa mia.
 	</p>
 
 	<p>
-		Il progetto non è comunque in alcun modo affiliato con Trentino Trasporti, con la Provincia Autonoma di
-		Trento o con RFI/Ferrovie dello Stato.
+		Il progetto non è comunque in alcun modo affiliato con Trentino Trasporti, con la Provincia
+		Autonoma di Trento o con RFI/Ferrovie dello Stato.
 	</p>
 
 	<p>
-		La posizione geografica opzionalmente raccolta nelle pagine con la lista delle fermate/stazioni non
-		viene mai inviata al server. Viene utilizzata esclusivamente sul tuo dispositivo per calcolare la
-		distanza dalle fermate/stazioni.
+		La posizione geografica opzionalmente raccolta nelle pagine con la lista delle fermate/stazioni
+		non viene mai inviata al server. Viene utilizzata esclusivamente sul tuo dispositivo per
+		calcolare la distanza dalle fermate/stazioni.
 	</p>
 
 	<p>
@@ -43,19 +43,28 @@
 	</p>
 
 	<p class="mt-10">
-		<a class="px-3 py-2 rounded-md no-underline bg-neutral-800 hover:bg-neutral-700" href={resolve('/')}>
+		<a
+			class="rounded-md bg-neutral-800 px-3 py-2 no-underline hover:bg-neutral-700"
+			href={resolve('/')}
+		>
 			🚍 Lista fermate autobus
 		</a>
 	</p>
 
 	<p class="mt-6">
-		<a class="px-3 py-2 rounded-md no-underline bg-neutral-800 hover:bg-neutral-700" href={resolve('/treni')}>
+		<a
+			class="rounded-md bg-neutral-800 px-3 py-2 no-underline hover:bg-neutral-700"
+			href={resolve('/treni')}
+		>
 			🚆 Lista stazioni treni
 		</a>
 	</p>
 
 	<p class="mt-6">
-		<a class="px-3 py-2 rounded-md no-underline bg-neutral-800 hover:bg-neutral-700" href={resolve('/aiuto')}>
+		<a
+			class="rounded-md bg-neutral-800 px-3 py-2 no-underline hover:bg-neutral-700"
+			href={resolve('/aiuto')}
+		>
 			❓ Istruzioni per trovare le fermate
 		</a>
 	</p>

@@ -15,5 +15,5 @@
 <span
 	bind:this={el}
 	onanimationstart={syncAnimation}
-	class="animate-train block h-2 w-2 rounded-full bg-white"
+	class="block h-2 w-2 animate-train rounded-full bg-white"
 ></span>

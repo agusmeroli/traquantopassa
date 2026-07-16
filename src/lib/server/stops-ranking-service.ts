@@ -8,7 +8,7 @@ import { elapsed } from '$lib/server/time-helpers';
 const rankingCacheKey = 'stop-rankings';
 
 const cache = new NodeCache({
-	stdTTL: 24 * 60 * 60 // 24 hours
+	stdTTL: 24 * 60 * 60, // 24 hours
 });
 
 export async function getRankings(stops: StopGroup[]) {
@@ -33,16 +33,17 @@ async function loadMostVisitedStops(stops: StopGroup[]): Promise<Record<string, 
 	const start = new Date();
 	start.setDate(start.getDate() - 30);
 
-	const url = 'https://traquantopassa.goatcounter.com/api/v0/stats/hits?start=' + start.toISOString();
+	const url =
+		'https://traquantopassa.goatcounter.com/api/v0/stats/hits?start=' + start.toISOString();
 
 	logger.info('Fetching stops ranking from API');
 	const startTs = performance.now();
 
 	const response = await fetch(url, {
 		headers: {
-			Authorization: 'Bearer ' + env.GOATCOUNTER_API_KEY
+			Authorization: 'Bearer ' + env.GOATCOUNTER_API_KEY,
 		},
-		signal: AbortSignal.timeout(3 * 1000)
+		signal: AbortSignal.timeout(3 * 1000),
 	});
 
 	const data = await response.json();
@@ -57,7 +58,7 @@ async function loadMostVisitedStops(stops: StopGroup[]): Promise<Record<string, 
 		if (match) {
 			const slug = match[0].slice(1);
 			// See if a stop with that slug exists
-			const stop = stops.find(x => x.slugs.includes(slug));
+			const stop = stops.find((x) => x.slugs.includes(slug));
 			if (stop) {
 				// Sum or save the total hits count
 				const code = stop.code;

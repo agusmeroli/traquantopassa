@@ -19,7 +19,7 @@ export async function load({ params }) {
 
 	try {
 		// Gather results for all directions in parallel
-		const promises = stopGroup.stops.map(s => tripsService.getTrips(s));
+		const promises = stopGroup.stops.map((s) => tripsService.getTrips(s));
 		const results = await Promise.all(promises);
 		for (const direction of results) {
 			directions.push(direction.value);
@@ -40,7 +40,7 @@ export async function load({ params }) {
 			canonicalSlug: stopGroup.slugs[0],
 			lastUpdatedAt: cacheTime,
 			directions,
-			trainStationSlug: getStationForStop(stopGroup.slugs[0])
-		} satisfies StopGroupDetails as StopGroupDetails // TODO: ???
+			trainStationSlug: getStationForStop(stopGroup.slugs[0]),
+		} satisfies StopGroupDetails as StopGroupDetails, // TODO: ???
 	};
 }

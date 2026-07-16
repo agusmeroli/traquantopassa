@@ -41,7 +41,7 @@ export async function load({ params }) {
 			lastUpdatedAt: trains.cachedAt,
 			trains: trains.value,
 			isDeparture,
-			stopSlug: getStopForStation(station.slug)
-		} satisfies StationDetails as StationDetails
+			stopSlug: getStopForStation(station.slug),
+		} satisfies StationDetails as StationDetails,
 	};
 }

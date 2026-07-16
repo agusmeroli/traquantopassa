@@ -27,13 +27,10 @@ export async function GET() {
 
 	xml += `</urlset>`;
 
-	return new Response(
-		xml,
-		{
-			headers: {
-				'Content-Type': 'application/xml',
-				'Cache-Control': 'max-age=3600'
-			}
-		}
-	);
+	return new Response(xml, {
+		headers: {
+			'Content-Type': 'application/xml',
+			'Cache-Control': 'max-age=3600',
+		},
+	});
 }

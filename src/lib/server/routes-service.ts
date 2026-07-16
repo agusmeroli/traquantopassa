@@ -6,7 +6,7 @@ import * as logger from '$lib/logger';
 
 // TODO: should use stale data instead of simply expiring it
 const cache = new NodeCache({
-	stdTTL: 24 * 60 * 60 // 24 hours
+	stdTTL: 24 * 60 * 60, // 24 hours
 });
 
 const routesCacheKey = 'routes';
@@ -21,7 +21,7 @@ export async function getRoutes() {
 	logger.info('Fetching routes from API');
 	const apiRoutes = await api.getRoutes();
 
-	routes = apiRoutes.map(apiRoute => apiRouteToRoute(apiRoute));
+	routes = apiRoutes.map((apiRoute) => apiRouteToRoute(apiRoute));
 
 	// Sort by route name (numeric)
 	routes.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
@@ -62,6 +62,6 @@ function apiRouteToRoute(apiRoute: api.ApiRoute): Route {
 		id: apiRoute.routeId,
 		name: apiRoute.routeShortName,
 		longName: apiRoute.routeLongName,
-		color: mapRouteColor(apiRoute)
+		color: mapRouteColor(apiRoute),
 	};
 }

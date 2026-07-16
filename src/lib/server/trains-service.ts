@@ -7,7 +7,10 @@ const cache = new NodeCache();
 
 const cacheDurationSeconds = 30;
 
-export async function getTrains(stationId: string, isDeparture = true): Promise<CachedItem<Train[]>> {
+export async function getTrains(
+	stationId: string,
+	isDeparture = true,
+): Promise<CachedItem<Train[]>> {
 	let cachedItem = cache.get<CachedItem<Train[]>>(`trains-${stationId}-${isDeparture}`);
 	if (cachedItem) {
 		return cachedItem;
@@ -45,9 +48,9 @@ function mapTrains(apiTrains: api.ApiTrain[]): Train[] {
 		const isIncomplete = delay == 'Cancellato' && train.notes == '' && train.stopTimes.length == 0;
 
 		// Hide the platform if it is "punto fermata" (bus) or if the train is replaced by a bus.
-		const platform = (train.platform == 'PF' || isReplacedByBus) ? '' : train.platform;
+		const platform = train.platform == 'PF' || isReplacedByBus ? '' : train.platform;
 
-		train.stopTimes.forEach(stop => stop.name = capitalize(stop.name));
+		train.stopTimes.forEach((stop) => (stop.name = capitalize(stop.name)));
 
 		return {
 			id: carrier + train.number + train.time,
@@ -64,24 +67,26 @@ function mapTrains(apiTrains: api.ApiTrain[]): Train[] {
 			isReplacedByBus,
 			isIncomplete: isIncomplete,
 			notes: train.notes,
-			stopTimes: train.stopTimes
+			stopTimes: train.stopTimes,
 		};
 	});
 }
 
 export function capitalize(str: string): string {
-	return str
-		.toLowerCase()
-		.replaceAll(/\.(\w)/g, '. $1') // e.g. "VENEZIA S.LUCIA" -> "VENEZIA S. LUCIA"
-		.replaceAll(/(\w)\/(\w)/g, '$1 / $2') // e.g. "MERANO/MERAN" -> "MERANO / MERAN"
-		// For some reason apostrophes are repeated 4 times in the RFI monitor.
-		// Split along spaces, dashes and apostrophes before re-capitalizing,
-		// and ignore the / \w'/ case to properly format names with apostrophes
-		//  e.g. "PONTE D'ADIGE" -> "Ponte d'Adige"
-		.replaceAll(/'+/g, '\'')
-		.split(/(?!\w')(?<=[ \-'])/g)
-		.map((word) => word.charAt(0).toUpperCase() + word.substring(1))
-		.join('');
+	return (
+		str
+			.toLowerCase()
+			.replaceAll(/\.(\w)/g, '. $1') // e.g. "VENEZIA S.LUCIA" -> "VENEZIA S. LUCIA"
+			.replaceAll(/(\w)\/(\w)/g, '$1 / $2') // e.g. "MERANO/MERAN" -> "MERANO / MERAN"
+			// For some reason apostrophes are repeated 4 times in the RFI monitor.
+			// Split along spaces, dashes and apostrophes before re-capitalizing,
+			// and ignore the / \w'/ case to properly format names with apostrophes
+			//  e.g. "PONTE D'ADIGE" -> "Ponte d'Adige"
+			.replaceAll(/'+/g, "'")
+			.split(/(?!\w')(?<=[ \-'])/g)
+			.map((word) => word.charAt(0).toUpperCase() + word.substring(1))
+			.join('')
+	);
 }
 
 function fixCarrier(carrier: string): string {
@@ -100,18 +105,18 @@ function fixCategory(category: string): string {
 	category = category.replace('Categoria ', '');
 
 	const mapping = {
-		'bus': 'Bus',
-		'rv': 'Regionale Veloce',
-		'reg': 'Regionale',
-		'ec': 'Eurocity',
-		'alta velocita\'': 'Alta Velocità',
-		'italo': 'Alta Velocità Italo',
-		'intercity': 'Intercity',
+		bus: 'Bus',
+		rv: 'Regionale Veloce',
+		reg: 'Regionale',
+		ec: 'Eurocity',
+		"alta velocita'": 'Alta Velocità',
+		italo: 'Alta Velocità Italo',
+		intercity: 'Intercity',
 		'intercity notte': 'Intercity Notte',
-		'rj': 'Railjet',
-		're': 'RegioExpress',
-		'nj': 'Nightjet',
-		'en': 'Euronight'
+		rj: 'Railjet',
+		re: 'RegioExpress',
+		nj: 'Nightjet',
+		en: 'Euronight',
 	};
 
 	category = category.toLowerCase();
@@ -125,18 +130,18 @@ function fixCategory(category: string): string {
 
 function categoryToIcon(category: string): string | null {
 	const mapping = {
-		'bus': 'bus',
-		'rv': 'rv', // regionale veloce
-		'reg': 'r', // regionale
-		'ec': 'ec', // eurocity
-		'alta velocita\'': 'av',
-		'italo': 'av',
-		'intercity': 'ic',
+		bus: 'bus',
+		rv: 'rv', // regionale veloce
+		reg: 'r', // regionale
+		ec: 'ec', // eurocity
+		"alta velocita'": 'av',
+		italo: 'av',
+		intercity: 'ic',
 		'intercity notte': 'icn',
-		'rj': 'rj', // railjet
-		'nj': 'nj', // nightjet
-		'en': 'en', // euronight
-		're': 're' // regio express
+		rj: 'rj', // railjet
+		nj: 'nj', // nightjet
+		en: 'en', // euronight
+		re: 're', // regio express
 	};
 
 	category = category.replace('Categoria ', '').toLowerCase();
@@ -155,8 +160,7 @@ function checkIsReplacedByBus(icon: string | null, delay: string, notes: string)
 	// (it could be in previous stations), hence the "cancelled" check, which tells us if it's actually a train.
 	notes = notes.toLocaleLowerCase();
 	if (icon != 'bus' && delay == 'Cancellato') {
-		isReplacedByBus =
-			notes.includes('autosostituito') || notes.includes('bus sostitutivo');
+		isReplacedByBus = notes.includes('autosostituito') || notes.includes('bus sostitutivo');
 	}
 
 	return isReplacedByBus;

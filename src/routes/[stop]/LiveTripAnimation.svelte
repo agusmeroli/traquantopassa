@@ -20,7 +20,7 @@
 <span
 	bind:this={el}
 	onanimationstart={syncAnimation}
-	class="rounded-full w-2 h-2 {className}"
+	class="h-2 w-2 rounded-full {className}"
 	class:bg-green-500={live === 'green'}
 	class:bg-yellow-500={live === 'yellow'}
 	class:animate-ping={live != null}

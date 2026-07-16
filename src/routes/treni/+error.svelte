@@ -3,13 +3,15 @@
 	import FooterNavigation from '$lib/components/FooterNavigation.svelte';
 </script>
 
-<div class="text-center mt-12">
+<div class="mt-12 text-center">
 	<div class="text-red-500">
 		{#if page.status === 404}
 			<p>Stazione ferroviaria non trovata</p>
 			<p>
 				Se pensi sia un errore, contattaci
-				<a href="mailto:ciao@traquantopassa.in?subject=Richiesta stazione /{page.params.station}">via email</a>.
+				<a href="mailto:ciao@traquantopassa.in?subject=Richiesta stazione /{page.params.station}"
+					>via email</a
+				>.
 			</p>
 		{:else if page.status === 503}
 			<p>I dati di RFI non sono al momento disponibili 😕</p>

@@ -6,6 +6,6 @@ export function load() {
 
 	return {
 		stations,
-		railways
+		railways,
 	};
 }
