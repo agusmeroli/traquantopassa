@@ -3,7 +3,7 @@
 	import FooterNavigation from '$lib/components/FooterNavigation.svelte';
 </script>
 
-<div class="text-center mt-12">
+<div class="mt-12 text-center">
 	<div class="text-red-500">
 		{#if page.status === 404}
 			<p>Pagina non trovata 😕</p>

@@ -19,7 +19,7 @@ describe('capitalize', () => {
 	});
 
 	// @formatter:off
-	it('preserves apostrophes in names like Ponte d\'Adige', () => {
+	it("preserves apostrophes in names like Ponte d'Adige", () => {
 		expect(capitalize("PONTE D'ADIGE")).toBe("Ponte d'Adige");
 	});
 	// @formatter:on

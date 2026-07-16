@@ -10,5 +10,5 @@ export default {
 	'21595': 593, // portanuova
 	'21710': 535, // travai
 	'25055': 463, // povo1
-	'21755': 445 // questura
+	'21755': 445, // questura
 } as Record<string, number>;

@@ -18,6 +18,6 @@ export async function load() {
 	return {
 		stops,
 		routes,
-		rankings
+		rankings,
 	};
 }

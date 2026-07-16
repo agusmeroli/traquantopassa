@@ -10,7 +10,7 @@
 		computeStopsDistances,
 		getCurrentPosition,
 		handleGeolocationError,
-		isGeolocationGranted
+		isGeolocationGranted,
 	} from '$lib/location-helpers';
 	import type { FavoriteStops } from '$lib/storage/favorites.svelte';
 	import { getDefaultTab, setDefaultTab, type Tab } from '$lib/storage/stops-default-tab';
@@ -29,28 +29,34 @@
 
 	const favorites: FavoriteStops = getContext('favorites');
 
-	let sortedStops = $derived(data.stops
-		// Sort by distance
-		.toSorted((a, b) => (distances.get(a.code) ?? Infinity) - (distances.get(b.code) ?? Infinity))
+	let sortedStops = $derived(
+		data.stops
+			// Sort by distance
+			.toSorted(
+				(a, b) => (distances.get(a.code) ?? Infinity) - (distances.get(b.code) ?? Infinity),
+			),
 	);
 
-	let filteredStops = $derived(data.stops
-		.filter((stop) =>
-			// Filter by route. Evaluates to true if no route is selected
-			(selectedRoute == '' || stop.routeIds.has(data.routes.find(x => x.name == selectedRoute)!.id)) &&
-			// Filter by search term on both name and code. Evaluates to true if no search term is present
-			(searchTerm == '' ||
-				new RegExp(`\\b${escapedSearchTerm}`, 'i').test(stop.name) ||
-				stop.slugs.some(slug => slug.includes(searchTerm))
-			)
-		));
-
-	let rankedStops = $derived(data.stops
-		.filter(x => data.rankings[x.code])
-		.toSorted((x, y) => data.rankings[y.code] - data.rankings[x.code])
+	let filteredStops = $derived(
+		data.stops.filter(
+			(stop) =>
+				// Filter by route. Evaluates to true if no route is selected
+				(selectedRoute == '' ||
+					stop.routeIds.has(data.routes.find((x) => x.name == selectedRoute)!.id)) &&
+				// Filter by search term on both name and code. Evaluates to true if no search term is present
+				(searchTerm == '' ||
+					new RegExp(`\\b${escapedSearchTerm}`, 'i').test(stop.name) ||
+					stop.slugs.some((slug) => slug.includes(searchTerm))),
+		),
 	);
 
-	let favoriteStops = $derived(data.stops.filter(x => favorites.value.includes(x.code)));
+	let rankedStops = $derived(
+		data.stops
+			.filter((x) => data.rankings[x.code])
+			.toSorted((x, y) => data.rankings[y.code] - data.rankings[x.code]),
+	);
+
+	let favoriteStops = $derived(data.stops.filter((x) => favorites.value.includes(x.code)));
 
 	onMount(async () => {
 		if (await isGeolocationGranted()) {
@@ -87,12 +93,13 @@
 
 	export const snapshot = {
 		capture: () => ({
-			searchTerm, selectedRoute
+			searchTerm,
+			selectedRoute,
 		}),
 		restore: (values) => {
 			searchTerm = values.searchTerm;
 			selectedRoute = values.selectedRoute;
-		}
+		},
 	};
 </script>
 
@@ -101,8 +108,8 @@
 </svelte:head>
 
 <header>
-	<h1 class="font-semibold text-4xl text-center">Tra quanto passa in...</h1>
-	<div class="mt-2 text-neutral-500 text-lg text-center">Città di Trento</div>
+	<h1 class="text-center text-4xl font-semibold">Tra quanto passa in...</h1>
+	<div class="mt-2 text-center text-lg text-neutral-500">Città di Trento</div>
 </header>
 
 <main>
@@ -110,45 +117,64 @@
 		<ModesSwitch isBus={true} />
 	</div>
 
-	<div class="mt-8 flex max-sm:flex-wrap gap-2 xs:gap-3" style="scrollbar-width: none">
-		<TabButton text="📍 Più vicine" isSelected={activeTab === 'all'} onClick={() => switchTab('all')} />
-		<TabButton text="📊 Più usate" isSelected={activeTab === 'ranked'} onClick={() => switchTab('ranked')} />
-		<TabButton text="🔍 Cerca" isSelected={activeTab === 'filter'} onClick={() => switchTab('filter')} />
-		<TabButton text="⭐️ Preferiti" isSelected={activeTab === 'favorites'} onClick={() => switchTab('favorites')} />
+	<div class="mt-8 flex gap-2 max-sm:flex-wrap xs:gap-3" style="scrollbar-width: none">
+		<TabButton
+			text="📍 Più vicine"
+			isSelected={activeTab === 'all'}
+			onClick={() => switchTab('all')}
+		/>
+		<TabButton
+			text="📊 Più usate"
+			isSelected={activeTab === 'ranked'}
+			onClick={() => switchTab('ranked')}
+		/>
+		<TabButton
+			text="🔍 Cerca"
+			isSelected={activeTab === 'filter'}
+			onClick={() => switchTab('filter')}
+		/>
+		<TabButton
+			text="⭐️ Preferiti"
+			isSelected={activeTab === 'favorites'}
+			onClick={() => switchTab('favorites')}
+		/>
 	</div>
 
 	{#if activeTab === 'all' || activeTab === 'filter'}
-		<div class="{activeTab === 'all' && (showGeolocationButton || loadingGeolocationData) ? 'mt-4' : 'mt-8'}">
+		<div
+			class={activeTab === 'all' && (showGeolocationButton || loadingGeolocationData)
+				? 'mt-4'
+				: 'mt-8'}
+		>
 			{#if activeTab === 'all' && showGeolocationButton}
-				<button onclick={updatePosition}
-				        in:slide
-				        class="block px-3.5 py-2 w-full text-center">
+				<button onclick={updatePosition} in:slide class="block w-full px-3.5 py-2 text-center">
 					⚠️ Consenti accesso alla posizione
 				</button>
 			{:else if activeTab === 'all' && loadingGeolocationData}
-				<div class="px-3.5 py-2 w-full text-center">
-					⏳ Caricamento posizione...
-				</div>
+				<div class="w-full px-3.5 py-2 text-center">⏳ Caricamento posizione...</div>
 			{/if}
 
 			{#if activeTab === 'filter'}
-				<div class="mt-4 flex max-sm:flex-col gap-x-4 gap-y-3">
-					<div class="flex gap-x-2 basis-1/2">
+				<div class="mt-4 flex gap-x-4 gap-y-3 max-sm:flex-col">
+					<div class="flex basis-1/2 gap-x-2">
 						<input
 							type="search"
 							placeholder="🔍 Cerca fermata..."
-							class="w-full px-3.5 py-2 rounded-md bg-neutral-800 text-neutral-100 focus:outline-2 focus:outline-neutral-700"
+							class="w-full rounded-md bg-neutral-800 px-3.5 py-2 text-neutral-100 focus:outline-2 focus:outline-neutral-700"
 							bind:value={searchTerm}
 						/>
-						<a href={resolve('/aiuto')}
-						   class="w-fit flex items-center justify-center px-3 rounded-md bg-neutral-800 hover:bg-neutral-700 no-underline">
+						<a
+							href={resolve('/aiuto')}
+							class="flex w-fit items-center justify-center rounded-md bg-neutral-800 px-3 no-underline hover:bg-neutral-700"
+						>
 							❓
 						</a>
 					</div>
 
 					<select
 						bind:value={selectedRoute}
-						class="w-full basis-1/2 py-2 px-3.5 rounded-md bg-neutral-800 text-neutral-100 focus:outline-2 focus:outline-neutral-700">
+						class="w-full basis-1/2 rounded-md bg-neutral-800 px-3.5 py-2 text-neutral-100 focus:outline-2 focus:outline-neutral-700"
+					>
 						<option value="">🚏 Filtra per linea</option>
 						{#each data.routes as route (route.id)}
 							<option value={route.name}>{route.name} - {route.longName}</option>
@@ -157,21 +183,26 @@
 				</div>
 
 				{#if searchTerm || selectedRoute}
-					<button class="w-full mt-4 px-3.5 py-2 rounded-md bg-neutral-800 hover:bg-neutral-700"
-					        onclick={() => { searchTerm = ''; selectedRoute = ''; }}>
+					<button
+						class="mt-4 w-full rounded-md bg-neutral-800 px-3.5 py-2 hover:bg-neutral-700"
+						onclick={() => {
+							searchTerm = '';
+							selectedRoute = '';
+						}}
+					>
 						❌ Rimuovi filtri
 					</button>
 				{/if}
 			{/if}
 
-			<div class="mt-4 text-lg grid sm:grid-cols-2 gap-4">
-				{#each (activeTab === 'all' ? sortedStops : filteredStops) as stop (stop.slugs[0])}
+			<div class="mt-4 grid gap-4 text-lg sm:grid-cols-2">
+				{#each activeTab === 'all' ? sortedStops : filteredStops as stop (stop.slugs[0])}
 					<StopBlock {stop} routes={data.routes} />
 				{/each}
 			</div>
 		</div>
 	{:else if activeTab === 'ranked'}
-		<div class="mt-8 text-lg grid sm:grid-cols-2 gap-4">
+		<div class="mt-8 grid gap-4 text-lg sm:grid-cols-2">
 			{#each rankedStops as stop (stop.slugs[0])}
 				<StopBlock {stop} routes={data.routes} />
 			{/each}
@@ -179,16 +210,18 @@
 	{:else}
 		<div class="mt-8">
 			{#if favoriteStops.length === 0}
-				<p class="mb-2 text-neutral-500 text-center">
+				<p class="mb-2 text-center text-neutral-500">
 					Premi l'icona della stella su una fermata per aggiungerla ai preferiti.
 				</p>
 			{/if}
 
-			<div class="text-lg grid sm:grid-cols-2 gap-4">
+			<div class="grid gap-4 text-lg sm:grid-cols-2">
 				{#each favoriteStops as stop (stop.slugs[0])}
-					<div class="flex shrink-0"
-					     animate:flip={{duration: 500, delay: 1000}}
-					     out:fade={{delay: 1000, duration: 100}}>
+					<div
+						class="flex shrink-0"
+						animate:flip={{ duration: 500, delay: 1000 }}
+						out:fade={{ delay: 1000, duration: 100 }}
+					>
 						<StopBlock {stop} routes={data.routes} />
 					</div>
 				{/each}
@@ -197,8 +230,11 @@
 	{/if}
 </main>
 
-<footer class="mb-12 mt-14 text-center">
-	<a class="px-3 py-2 rounded-md no-underline bg-neutral-800 hover:bg-neutral-700" href={resolve('/info')}>
+<footer class="mt-14 mb-12 text-center">
+	<a
+		class="rounded-md bg-neutral-800 px-3 py-2 no-underline hover:bg-neutral-700"
+		href={resolve('/info')}
+	>
 		ℹ️ Informazioni
 	</a>
 </footer>

@@ -20,9 +20,4 @@ function debug(message: string) {
 	log('DEBUG', message);
 }
 
-export {
-	info,
-	warn,
-	error,
-	debug
-};
+export { info, warn, error, debug };

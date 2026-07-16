@@ -30,7 +30,7 @@ export default {
 	'42042': 'Nave San Felice Stazione FTM',
 	'22625': 'Spini Zona Industriale FTM',
 
-	'22230': 'SS 12 Zona Industriale FTM',// makes SS and SP capitalized and without dots for consistency
+	'22230': 'SS 12 Zona Industriale FTM', // makes SS and SP capitalized and without dots for consistency
 	'22075': 'Gardolo Svincolo SS 12',
 	'43052': 'Sorni SS 12',
 	'22715': 'SS 12 Bivio Meano',
@@ -39,7 +39,7 @@ export default {
 	'26045': 'SS 12 Le Caverne',
 	'22705': 'SS 12 Paludi',
 	'22710': 'SS 12 Pioppeto',
-	'22730': 'SS 12 Sant\'Anna',
+	'22730': "SS 12 Sant'Anna",
 	'22725': 'SS 12 Talvera',
 	'25815': 'SS 349 Pozzata',
 	'28055': 'SS 45 Montevideo',
@@ -63,11 +63,11 @@ export default {
 
 	'21080': 'Apuleio Ponte San Giorgio', // Exapands S. to the correct version of Sant for better search
 	'21105': 'Asiago San Bartolameo',
-	'21130': 'Bolghera Sant\'Antonio',
+	'21130': "Bolghera Sant'Antonio",
 	'20105': 'Cavalcavia San Lorenzo',
 	'24035': 'Cognola San Vito',
-	'22065': 'Gardolo Sant\'Anna',
-	'22070': 'Gardolo Sant\'Anna Carpenedi',
+	'22065': "Gardolo Sant'Anna",
+	'22070': "Gardolo Sant'Anna Carpenedi",
 	'21335': 'Gerola Ospedale Santa Chiara',
 	'21350': 'Giovanelli Ospedale San Camillo',
 	'21465': 'Madonna Bianca San Gaetano',
@@ -77,10 +77,10 @@ export default {
 	'42032': 'Nave San Felice Case Tenaia',
 	'42012': 'Nave San Felice Maso Rover',
 	'42022': 'Nave San Felice Zona Stuadri',
-	'22680': 'Palazzine Maso Sant\'Antonio',
+	'22680': "Palazzine Maso Sant'Antonio",
 	'21535': 'Piave Parco Santa Chiara',
 	'21030': 'Ponte San Giorgio',
-	'25035': 'Povo Sant\'Agata',
+	'25035': "Povo Sant'Agata",
 	'21590': 'Rosmini Santa Maria Maggiore',
 	'24935': 'RSA San Bartolomeo',
 	'21595': 'San Francesco Porta Nuova',
@@ -95,5 +95,5 @@ export default {
 	'28320': 'Vela Scuole San Vigilio',
 	'21765': 'Verona San Bartolameo',
 	'23425': 'Vigo Meano San Pietro',
-	'21790': 'Vittorio Veneto San Giuseppe'
+	'21790': 'Vittorio Veneto San Giuseppe',
 } as Record<string, string>;

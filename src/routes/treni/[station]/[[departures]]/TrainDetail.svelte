@@ -6,27 +6,22 @@
 	}
 
 	let { train }: Props = $props();
-
 </script>
 
 <!-- This wrapper is needed to be able to add a bottom padding and avoid the slide transition jerkiness -->
 <div class="pt-1 pb-3">
-	<div class="rounded-lg bg-neutral-800 border border-neutral-700">
-		<div class="max-h-40 py-3 overflow-y-auto px-4 flex flex-col gap-y-2.5">
+	<div class="rounded-lg border border-neutral-700 bg-neutral-800">
+		<div class="flex max-h-40 flex-col gap-y-2.5 overflow-y-auto px-4 py-3">
 			{#if train.notes}
 				<div class="leading-[1.3]">
-					<h3 class="inline font-medium text-neutral-400">
-						Informazioni:
-					</h3>
-					<p class="inline m-0">
+					<h3 class="inline font-medium text-neutral-400">Informazioni:</h3>
+					<p class="m-0 inline">
 						{train.notes}
 					</p>
 				</div>
 			{/if}
 			{#if train.stopTimes.length}
-				<h3 class="font-medium text-neutral-400 leading-none mb-1">
-					Ferma a:
-				</h3>
+				<h3 class="mb-1 leading-none font-medium text-neutral-400">Ferma a:</h3>
 				<!-- eslint-disable-next-line svelte/require-each-key -->
 				{#each train.stopTimes as stopTime}
 					<div class="flex items-center gap-x-4">
@@ -34,7 +29,7 @@
 							{stopTime.time}
 						</div>
 
-						<div class="whitespace-nowrap leading-none">
+						<div class="leading-none whitespace-nowrap">
 							{stopTime.name}
 						</div>
 					</div>
@@ -42,8 +37,10 @@
 			{/if}
 			{#if !train.notes && !train.stopTimes.length}
 				<div class="text-center">
-					Nessuna informazione disponibile per
-					questo {train.category === 'Bus' || train.isReplacedByBus ? 'autobus' : 'treno'}
+					Nessuna informazione disponibile per questo {train.category === 'Bus' ||
+					train.isReplacedByBus
+						? 'autobus'
+						: 'treno'}
 				</div>
 			{/if}
 		</div>

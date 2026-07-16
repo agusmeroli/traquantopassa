@@ -6,7 +6,6 @@
 	import { onMount, setContext, type Snippet } from 'svelte';
 	import type { Topbar } from 'topbar';
 	import { favoriteStopsStore } from '$lib/storage/favorites.svelte';
-	import Banner from './Banner.svelte';
 
 	interface Props {
 		children?: Snippet;
@@ -17,11 +16,11 @@
 	let topbar: Topbar | undefined = $state();
 
 	onMount(async () => {
-		topbar = await import('topbar') as unknown as Topbar;
+		topbar = (await import('topbar')) as unknown as Topbar;
 		topbar.config({
 			barColors: {
-				'0': '#ffffff'
-			}
+				'0': '#ffffff',
+			},
 		});
 	});
 
@@ -38,6 +37,6 @@
 
 <!--<Banner />-->
 
-<div class="max-w-[600px] mx-auto mt-10 px-5">
+<div class="mx-auto mt-10 max-w-[600px] px-5">
 	{@render children?.()}
 </div>

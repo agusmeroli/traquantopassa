@@ -8,12 +8,14 @@
 </svelte:head>
 
 <header>
-	<h1 class="font-semibold text-4xl">Istruzioni per trovare le fermate</h1>
+	<h1 class="text-4xl font-semibold">Istruzioni per trovare le fermate</h1>
 </header>
 
 <main class="my-8">
 	<p>
-		Puoi cercare o accedere a qualsiasi fermata di Trento con il <strong>codice della fermata</strong>.
+		Puoi cercare o accedere a qualsiasi fermata di Trento con il <strong
+			>codice della fermata</strong
+		>.
 	</p>
 
 	<p>
@@ -21,8 +23,8 @@
 	</p>
 
 	<p>
-		Dopo aver tolto la "p" o altri simboli, puoi usare questo codice per filtrare la lista oppure per accedere
-		direttamente alla pagina della fermata. Ad esempio:
+		Dopo aver tolto la "p" o altri simboli, puoi usare questo codice per filtrare la lista oppure
+		per accedere direttamente alla pagina della fermata. Ad esempio:
 	</p>
 
 	<p class="text-center">
@@ -31,28 +33,35 @@
 		</a>
 	</p>
 
-	<p>
-		Puoi trovare il codice di una fermata sulle tabelle degli orari esposti alle fermate:
-	</p>
+	<p>Puoi trovare il codice di una fermata sulle tabelle degli orari esposti alle fermate:</p>
 
 	<p>
 		<img src={stopInstructionsImage} alt="" class="mx-auto" />
 	</p>
 
 	<p class="mt-10">
-		<a class="px-3 py-2 rounded-md no-underline bg-neutral-800 hover:bg-neutral-700" href={resolve('/')}>
+		<a
+			class="rounded-md bg-neutral-800 px-3 py-2 no-underline hover:bg-neutral-700"
+			href={resolve('/')}
+		>
 			🚍 Lista fermate autobus
 		</a>
 	</p>
 
 	<p class="mt-6">
-		<a class="px-3 py-2 rounded-md no-underline bg-neutral-800 hover:bg-neutral-700" href={resolve('/treni')}>
+		<a
+			class="rounded-md bg-neutral-800 px-3 py-2 no-underline hover:bg-neutral-700"
+			href={resolve('/treni')}
+		>
 			🚆 Lista stazioni treni
 		</a>
 	</p>
 
 	<p class="mt-6">
-		<a class="px-3 py-2 rounded-md no-underline bg-neutral-800 hover:bg-neutral-700" href={resolve('/info')}>
+		<a
+			class="rounded-md bg-neutral-800 px-3 py-2 no-underline hover:bg-neutral-700"
+			href={resolve('/info')}
+		>
 			ℹ️ Informazioni
 		</a>
 	</p>

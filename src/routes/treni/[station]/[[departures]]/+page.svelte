@@ -23,7 +23,7 @@
 	let timer: ReturnType<typeof setInterval>;
 
 	const trainState: ExpandedTripState = {
-		id: null
+		id: null,
 	};
 	const expandedTrain = $state(trainState);
 	setContext('expandedTrain', expandedTrain);
@@ -60,7 +60,7 @@
 		aggiornato alle
 		{new Date(details.lastUpdatedAt).toLocaleTimeString(['it-IT'], {
 			hour: '2-digit',
-			minute: '2-digit'
+			minute: '2-digit',
 		})}
 	</div>
 
@@ -71,14 +71,18 @@
 	{/if}
 
 	<div class="mt-6 flex justify-center">
-		<ArrivalsDeparturesSwitch isDeparture={details.isDeparture} stationSlug={details.canonicalSlug} />
+		<ArrivalsDeparturesSwitch
+			isDeparture={details.isDeparture}
+			stationSlug={details.canonicalSlug}
+		/>
 	</div>
 </header>
 
 <main>
 	<div class="mt-10 flex flex-col">
 		{#if details.trains.length > 0}
-			{#key details.isDeparture} <!-- key to prevent the (slow) transition on arrival/departure switch -->
+			{#key details.isDeparture}
+				<!-- key to prevent the (slow) transition on arrival/departure switch -->
 				{#each details.trains.slice(0, limit) as train (train.id)}
 					<div
 						animate:flip={{ delay: 300 }}
@@ -92,7 +96,7 @@
 
 			{#if !showMore && details.trains.length > limit}
 				<button
-					class="text-mid mt-2 rounded-md bg-neutral-800 px-3 py-1 no-underline hover:bg-neutral-700 cursor-pointer"
+					class="mt-2 cursor-pointer rounded-md bg-neutral-800 px-3 py-1 text-mid no-underline hover:bg-neutral-700"
 					onclick={() => {
 						showMore = true;
 						showMoreInProgress = true;
@@ -114,10 +118,12 @@
 	<div class="text-sm text-neutral-500">
 		<div>
 			<a
-				href="https://iechub.rfi.it/ArriviPartenze/ArrivalsDepartures/Monitor?placeId={data.details.id}&arrivals={!data.details.isDeparture}">
+				href="https://iechub.rfi.it/ArriviPartenze/ArrivalsDepartures/Monitor?placeId={data.details
+					.id}&arrivals={!data.details.isDeparture}"
+			>
 				Dati RFI
-			</a>. La granularità dei ritardi è di 5 minuti.
-			I dati sugli autobus sostitutivi non sono sempre affidabili, verifica sugli orari.
+			</a>. La granularità dei ritardi è di 5 minuti. I dati sugli autobus sostitutivi non sono
+			sempre affidabili, verifica sugli orari.
 		</div>
 
 		<div class="mt-2">
