@@ -25,6 +25,7 @@
 <div class="pt-1 pb-3">
 	<div class="rounded-lg bg-neutral-800 border border-neutral-700">
 		<div class="h-40 py-3 overflow-y-auto px-4 flex flex-col gap-y-2.5">
+			<!-- eslint-disable-next-line svelte/require-each-key -->
 			{#each trip.stopTimes as stopTime, i}
 				{@const wasPassed = i < trip.currentStopSequenceNumber}
 				<div bind:this={stopElements[i]} class="flex items-center gap-x-4">

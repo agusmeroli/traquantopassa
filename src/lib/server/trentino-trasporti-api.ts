@@ -76,7 +76,7 @@ export async function getStops() {
 		signal: AbortSignal.timeout(10 * 1000)
 	});
 
-	let data: ApiStop[] = await res.json();
+	const data: ApiStop[] = await res.json();
 
 	logger.info(`Fetched stops in ${elapsed(start)} ms`);
 

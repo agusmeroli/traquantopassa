@@ -78,6 +78,7 @@
 </header>
 
 <main>
+	<!-- eslint-disable-next-line svelte/require-each-key -->
 	{#each details.directions as direction}
 		<div class="mt-10 flex flex-col">
 			{#if direction.name && details.directions.length > 1}

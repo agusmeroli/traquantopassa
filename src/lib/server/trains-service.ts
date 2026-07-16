@@ -2,7 +2,6 @@ import NodeCache from 'node-cache';
 import * as api from './rfi-api';
 import type { Train } from '$lib/Train';
 import CachedItem from '$lib/server/CachedItem';
-import type { StopTime } from '$lib/Trip';
 
 const cache = new NodeCache();
 

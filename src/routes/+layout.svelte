@@ -6,7 +6,6 @@
 	import { onMount, setContext, type Snippet } from 'svelte';
 	import type { Topbar } from 'topbar';
 	import { favoriteStopsStore } from '$lib/storage/favorites.svelte';
-	import Banner from './Banner.svelte';
 
 	interface Props {
 		children?: Snippet;

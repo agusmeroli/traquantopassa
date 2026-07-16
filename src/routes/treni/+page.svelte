@@ -9,7 +9,6 @@
 	import type { FavoriteStations } from '$lib/storage/favorites.svelte';
 	import {
 		computeStationsDistances,
-		distance,
 		getCurrentPosition,
 		handleGeolocationError,
 		isGeolocationGranted
