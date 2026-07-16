@@ -3,8 +3,7 @@ import ts from 'typescript-eslint';
 import svelte from 'eslint-plugin-svelte';
 import prettier from 'eslint-config-prettier';
 import globals from 'globals';
-import { includeIgnoreFile } from '@eslint/compat';
-import { defineConfig } from 'eslint/config';
+import { defineConfig, includeIgnoreFile } from 'eslint/config';
 import path from 'node:path';
 
 const gitignorePath = path.resolve(import.meta.dirname, '.gitignore');
