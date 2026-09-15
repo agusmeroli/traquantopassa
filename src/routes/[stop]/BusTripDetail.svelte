@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import {BadgeAlert as Alert} from '@lucide/svelte';
 	import type { Trip } from '$lib/Trip';
 
 	interface Props {
@@ -25,7 +26,17 @@
 <!-- This wrapper is needed to be able to add a bottom padding and avoid the slide transition jerkiness -->
 <div class="pt-1 pb-3">
 	<div class="rounded-lg border border-neutral-700 bg-neutral-800">
-		<div class="flex h-40 flex-col gap-y-2.5 overflow-y-auto px-4 py-3">
+		<div class="flex justify-between px-3 py-1.5">
+			{#if trip.vehicleId}
+				<span class="font-bold"> Bus {trip.vehicleId}</span>
+			{:else}
+				<span class="font-semibold italic"> Dati non disponibili</span>
+			{/if}
+			<Alert></Alert>
+			<span class="font-light">Aggiornato 1min fa</span>
+		</div>
+
+		<div class="flex h-45 flex-col gap-y-2.5 overflow-y-auto px-4 py-3">
 			<!-- eslint-disable-next-line svelte/require-each-key -->
 			{#each trip.stopTimes as stopTime, i}
 				{@const wasPassed = i < trip.currentStopSequenceNumber}

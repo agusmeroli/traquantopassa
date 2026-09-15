@@ -4,6 +4,7 @@ export interface Trip {
 	routeColor: string;
 	destination: string;
 	minutes: number;
+	vehicleId: string | null;
 	delay: number | null;
 	currentStopSequenceNumber: number;
 	userStopSequenceNumber: number;

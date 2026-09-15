@@ -110,6 +110,7 @@ async function mapApiTrips(apiTrips: api.ApiTrip[], routes: Route[], userStopId:
 				routeName: route.name,
 				routeColor: route.color,
 				destination: trip.tripHeadsign,
+				vehicleId: trip.matricolaBus?.toString() || null,
 				minutes,
 				delay,
 				currentStopSequenceNumber,
