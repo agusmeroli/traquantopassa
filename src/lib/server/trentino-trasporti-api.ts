@@ -39,6 +39,7 @@ export interface ApiTrip {
 	lastEventRecivedAt: string;
 	tripHeadsign: string;
 	stopTimes: ApiStopTime[];
+	stopNext: number;
 }
 
 export interface ApiStopTime {

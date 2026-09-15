@@ -50,7 +50,9 @@
 			{#if trip.delay != null}
 				{@const distanceInStops = trip.userStopSequenceNumber - trip.currentStopSequenceNumber}
 
-				{#if trip.currentStopSequenceNumber === 0}
+				{#if trip.currentStopSequenceNumber === -1}
+					sulla corsa precedente
+				{:else if trip.currentStopSequenceNumber === 0}
 					non ancora partito
 				{:else if distanceInStops < 0}
 					oltre la tua fermata

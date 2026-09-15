@@ -61,7 +61,13 @@ async function mapApiTrips(apiTrips: api.ApiTrip[], routes: Route[], userStopId:
 
 			const delay = trip.delay;
 
-			const currentStopSequenceNumber = trip.lastSequenceDetection;
+			let currentStopSequenceNumber = trip.lastSequenceDetection;
+
+			// If a bus is delayed enough that it won't make it to the next route in time, 
+			// it is incorrectly shown as being on the first stop, this sets it to -1 so we can display the information
+			if (trip.stopNext === 0 && delay != null) {
+				currentStopSequenceNumber = -1;
+			}
 
 			// Check if the last update of real-time data isn't recent enough
 			let isOutdated = false;
