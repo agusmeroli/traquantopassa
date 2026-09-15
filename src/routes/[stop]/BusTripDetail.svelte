@@ -52,7 +52,7 @@
 
 					<div class="leading-none whitespace-nowrap">
 						{#if i === trip.userStopSequenceNumber - 1}
-							<span class="font-semibold">La tua fermata 📍</span>
+							<span class="font-semibold">📍 La tua fermata</span>
 						{:else}
 							{stopTime.name}
 						{/if}
