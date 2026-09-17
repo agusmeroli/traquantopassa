@@ -22,23 +22,26 @@
 			elementToScroll.scrollIntoView({ block: 'center' });
 		}
 	});
+	
+	$effect(() => {
+		// Don't bother updating periodically if the data is already more than
+		// one minute old.
+		if (Date.now() - trip.lastUpdatedTimestamp >= 60_000) {
+			return;
+		}
 
-	// do not bother updating periodically if it's more than 1 min old
-	if (Date.now() - trip.lastUpdatedTimestamp < 1000 * 60) {
 		const interval = setInterval(() => {
 			lastUpdated = timeAgo();
 		}, 5_000);
 
-		$effect(() => {
-			return () => clearInterval(interval);
-		});
-	}
+		return () => clearInterval(interval);
+	});
 
 
 	function timeAgo() {
 		const seconds = Math.floor((Date.now() - trip.lastUpdatedTimestamp) / 1000);
 
-		// tound to nearest 5s
+		// Round to nearest 5s
 		if (seconds < 60){
 			return `${Math.ceil(seconds / 5) * 5}s`;
 		}
