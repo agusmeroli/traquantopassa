@@ -8,9 +8,9 @@
 	}
 
 	let { trip }: Props = $props();
-
+	
 	const stopElements: (HTMLDivElement | undefined)[] = $state([]);
-	let now = $state(Date.now());
+	let lastUpdated = $state(timeAgo())
 
 	onMount(() => {
 		// On load, show the last passed stop in the middle so it's easier to see.
@@ -23,20 +23,24 @@
 		}
 	});
 
-	const interval = setInterval(() => {
-		now = Date.now();
-	}, 10_000);
+	// do not bother updating periodically if it's more than 1 min old
+	if (Date.now() - trip.lastUpdatedTimestamp < 1000 * 60) {
+		const interval = setInterval(() => {
+			lastUpdated = timeAgo();
+		}, 5_000);
 
-	$effect(() => {
-		return () => clearInterval(interval);
-	});
+		$effect(() => {
+			return () => clearInterval(interval);
+		});
+	}
 
-	function timeAgo(timestamp: number, now: number) {
-		const seconds = Math.floor((now - timestamp) / 1000);
 
-		// tound to nearest 10s
+	function timeAgo() {
+		const seconds = Math.floor((Date.now() - trip.lastUpdatedTimestamp) / 1000);
+
+		// tound to nearest 5s
 		if (seconds < 60){
-			return `${Math.ceil(seconds / 10) * 10}s`;
+			return `${Math.ceil(seconds / 5) * 5}s`;
 		}
 
 		const minutes = Math.floor(seconds / 60);
@@ -55,7 +59,7 @@
 			{/if}
 			<Alert></Alert>
 			{#if trip.lastUpdatedTimestamp !== 0}
-				<span class="font-light">Aggiornato {timeAgo(trip.lastUpdatedTimestamp, now)} fa</span>
+				<span class="font-light">Aggiornato {lastUpdated} fa</span>
 			{/if}
 		</div>
 
