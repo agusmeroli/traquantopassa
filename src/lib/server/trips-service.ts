@@ -16,7 +16,6 @@ const cache = new NodeCache();
 const tripsCacheDurationSeconds = 29;
 
 const defaultLimit = 15;
-const outdatedDataThresholdMillis = 1000 * 60 * 5;
 
 export async function getTrips(stop: Stop): Promise<CachedItem<StopDirection>> {
 	const stopId = stop.id;
@@ -70,10 +69,9 @@ async function mapApiTrips(apiTrips: api.ApiTrip[], routes: Route[], userStopId:
 			}
 
 			// Check if the last update of real-time data isn't recent enough
-			let isOutdated = false;
-			if (delay != null) {
-				const lastEventDate = new Date(trip.lastEventRecivedAt);
-				isOutdated = Date.now() - lastEventDate.getTime() > outdatedDataThresholdMillis;
+			let lastUpdatedTimestamp = 0;
+			if (delay != null && trip.lastEventRecivedAt != null) {
+				lastUpdatedTimestamp = new Date(trip.lastEventRecivedAt).getTime();
 			}
 
 			// Check if the trip will end at the current user stop
@@ -115,7 +113,7 @@ async function mapApiTrips(apiTrips: api.ApiTrip[], routes: Route[], userStopId:
 				delay,
 				currentStopSequenceNumber,
 				userStopSequenceNumber,
-				isOutdated,
+				lastUpdatedTimestamp,
 				isEndOfRouteForUser,
 				stopTimes,
 			} satisfies Trip as Trip;

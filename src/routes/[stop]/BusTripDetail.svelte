@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import {BadgeAlert as Alert} from '@lucide/svelte';
+	import { BadgeAlert as Alert } from '@lucide/svelte';
 	import type { Trip } from '$lib/Trip';
 
 	interface Props {
@@ -10,6 +10,7 @@
 	let { trip }: Props = $props();
 
 	const stopElements: (HTMLDivElement | undefined)[] = $state([]);
+	let now = $state(Date.now());
 
 	onMount(() => {
 		// On load, show the last passed stop in the middle so it's easier to see.
@@ -21,6 +22,26 @@
 			elementToScroll.scrollIntoView({ block: 'center' });
 		}
 	});
+
+	const interval = setInterval(() => {
+		now = Date.now();
+	}, 10_000);
+
+	$effect(() => {
+		return () => clearInterval(interval);
+	});
+
+	function timeAgo(timestamp: number, now: number) {
+		const seconds = Math.floor((now - timestamp) / 1000);
+
+		// tound to nearest 10s
+		if (seconds < 60){
+			return `${Math.ceil(seconds / 10) * 10}s`;
+		}
+
+		const minutes = Math.floor(seconds / 60);
+		return `${minutes} min`;
+	}
 </script>
 
 <!-- This wrapper is needed to be able to add a bottom padding and avoid the slide transition jerkiness -->
@@ -28,15 +49,17 @@
 	<div class="rounded-lg border border-neutral-700 bg-neutral-800">
 		<div class="flex justify-between px-3 py-1.5">
 			{#if trip.vehicleId}
-				<span class="font-bold"> Bus {trip.vehicleId}</span>
+				<span class="font-bold">Bus {trip.vehicleId}</span>
 			{:else}
-				<span class="font-semibold italic"> Dati non disponibili</span>
+				<span class="font-semibold italic">Dati non disponibili</span>
 			{/if}
 			<Alert></Alert>
-			<span class="font-light">Aggiornato 1min fa</span>
+			{#if trip.lastUpdatedTimestamp !== 0}
+				<span class="font-light">Aggiornato {timeAgo(trip.lastUpdatedTimestamp, now)} fa</span>
+			{/if}
 		</div>
 
-		<div class="flex h-45 flex-col gap-y-2.5 overflow-y-auto px-4 py-3">
+		<div class="flex max-h-50 flex-col gap-y-2.5 overflow-y-auto px-4 py-3">
 			<!-- eslint-disable-next-line svelte/require-each-key -->
 			{#each trip.stopTimes as stopTime, i}
 				{@const wasPassed = i < trip.currentStopSequenceNumber}

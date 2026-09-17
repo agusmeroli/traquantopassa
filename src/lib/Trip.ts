@@ -8,7 +8,7 @@ export interface Trip {
 	delay: number | null;
 	currentStopSequenceNumber: number;
 	userStopSequenceNumber: number;
-	isOutdated: boolean;
+	lastUpdatedTimestamp: number;
 	isEndOfRouteForUser: boolean;
 	stopTimes: StopTime[];
 }

@@ -10,7 +10,6 @@
 	interface Props {
 		trip: Trip;
 	}
-
 	let { trip }: Props = $props();
 
 	let expandedTrip = getContext<ExpandedTripState>('expandedTrip');
@@ -18,6 +17,13 @@
 
 	function toggle() {
 		expandedTrip.id = expanded ? null : trip.id;
+	}
+
+	const OUTDATED_THRESHOLD_MILLIS = 1000 * 60 * 5;
+	const now =  $state(Date.now());
+
+	function isOutdated(timestamp: number) {
+		return now - timestamp >  OUTDATED_THRESHOLD_MILLIS;
 	}
 </script>
 
@@ -80,7 +86,7 @@
 		</span>
 	</div>
 	<PulsingMinutes minutes={trip.minutes} dimmed={trip.isEndOfRouteForUser} />
-	<LiveTripAnimation live={trip.delay != null ? (trip.isOutdated ? 'yellow' : 'green') : null} />
+	<LiveTripAnimation live={trip.delay != null ? (isOutdated(trip.lastUpdatedTimestamp) ? 'yellow' : 'green') : null} />
 </div>
 
 {#if expanded}
