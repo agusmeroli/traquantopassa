@@ -20,19 +20,33 @@
 	const expandedTrip = $state(tripState);
 	setContext('expandedTrip', expandedTrip);
 
-	const REFRESH_INTERVAL = 30 * 1000;
+	const REFRESH_INTERVAL_SECONDS = 30;
 	let timer: ReturnType<typeof setInterval>;
+
+	let lastUpdatedAgo = $state("")
+	updateTime()
 
 	function onVisibilityChange() {
 		clearInterval(timer);
 		if (document.visibilityState != 'hidden') {
 			invalidateAll();
-			timer = setInterval(invalidateAll, REFRESH_INTERVAL);
+			timer = setInterval(updateTime, 5 * 1000);
+		}
+	}
+
+	function updateTime() {
+		const millis = Date.now() - details.lastUpdatedAt.getTime();
+		const seconds = Math.floor(millis / 1000);
+		// Round to nearest 5s
+		const rounded_seconds = Math.floor(seconds / 5) * 5;
+		lastUpdatedAgo = rounded_seconds > 0 ? `${rounded_seconds}s fa` : "ora";
+		if (seconds > REFRESH_INTERVAL_SECONDS) {
+			invalidateAll()
 		}
 	}
 
 	onMount(() => {
-		timer = setInterval(invalidateAll, REFRESH_INTERVAL);
+		timer = setInterval(updateTime, 5 * 1000);
 		document.addEventListener('visibilitychange', onVisibilityChange);
 		return () => {
 			clearInterval(timer);
@@ -54,11 +68,7 @@
 		<StopFavoriteButton stopCode={details.code} className="pl-2" />
 	</div>
 	<div class="mt-1 text-center text-sm">
-		aggiornato alle
-		{new Date(details.lastUpdatedAt).toLocaleTimeString(['it-IT'], {
-			hour: '2-digit',
-			minute: '2-digit',
-		})}
+		aggiornato {lastUpdatedAgo}
 	</div>
 
 	{#if details.trainStationSlug}
