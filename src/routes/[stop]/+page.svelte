@@ -1,23 +1,18 @@
 <script lang="ts">
 	import { PUBLIC_BASE_URL } from '$env/static/public';
-	import Trip from './Trip.svelte';
 	import FooterNavigation from '$lib/components/FooterNavigation.svelte';
 	import { onMount, setContext } from 'svelte';
 	import { invalidateAll } from '$app/navigation';
-	import { flip } from 'svelte/animate';
-	import { fade } from 'svelte/transition';
 	import ModesSwitch from '$lib/components/ModesSwitch.svelte';
 	import LiveTripAnimation from './LiveTripAnimation.svelte';
 	import StopFavoriteButton from '$lib/components/StopFavoriteButton.svelte';
 	import { Flag } from '@lucide/svelte';
 	import type { ExpandedTripState } from '$lib/Trip';
+	import Direction from './Direction.svelte';
 
 	let { data } = $props();
 
 	let details = $derived(data.details);
-	let showMore = $state(data.details.directions.length < 2);
-	let limit = $derived(showMore ? 15 : 5);
-	let showMoreInProgress = $state(false);
 
 	const tripState: ExpandedTripState = {
 		id: null,
@@ -80,44 +75,7 @@
 <main>
 	<!-- eslint-disable-next-line svelte/require-each-key -->
 	{#each details.directions as direction}
-		<div class="mt-10 flex flex-col">
-			{#if direction.name && details.directions.length > 1}
-				<div class="mx-auto mb-4 w-fit text-center text-lg font-medium uppercase">
-					{direction.name}
-				</div>
-			{/if}
-			{#if direction.trips.length > 0}
-				{#each direction.trips.slice(0, limit) as trip (trip.id)}
-					<div
-						animate:flip={{
-							delay: 0,
-							duration: 300,
-						}}
-						in:fade={{ delay: showMoreInProgress ? 0 : 800, duration: 300 }}
-						out:fade={{ duration: 300 }}
-					>
-						<Trip {trip} />
-					</div>
-				{/each}
-
-				{#if !showMore && direction.trips.length > limit}
-					<button
-						class="mt-2 cursor-pointer rounded-md bg-neutral-800 px-3 py-1 text-mid no-underline hover:bg-neutral-700"
-						onclick={() => {
-							showMore = true;
-							showMoreInProgress = true;
-							setTimeout(() => {
-								showMoreInProgress = false;
-							}, 50);
-						}}
-					>
-						Mostra altri {direction.trips.length - limit}
-					</button>
-				{/if}
-			{:else}
-				<div class="text-center">Nessun autobus previsto per oggi</div>
-			{/if}
-		</div>
+		<Direction {direction} alone={details.directions.length < 2} />
 	{/each}
 </main>
 
