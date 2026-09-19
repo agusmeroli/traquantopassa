@@ -22,9 +22,7 @@
 	const OUTDATED_THRESHOLD_MILLIS = 1000 * 60 * 5;
 	const now =  $state(Date.now());
 
-	function isOutdated(timestamp: number) {
-		return now - timestamp >  OUTDATED_THRESHOLD_MILLIS;
-	}
+	let distanceInStops = $derived(trip.userStopSequenceNumber - trip.currentStopSequenceNumber);
 </script>
 
 <div
@@ -54,8 +52,6 @@
 		</span>
 		<span class="block text-xs leading-none text-neutral-500">
 			{#if trip.delay != null}
-				{@const distanceInStops = trip.userStopSequenceNumber - trip.currentStopSequenceNumber}
-
 				{#if trip.currentStopSequenceNumber === -1}
 					sulla corsa precedente
 				{:else if trip.currentStopSequenceNumber === 0}
@@ -88,7 +84,7 @@
 		</span>
 	</div>
 	<PulsingMinutes minutes={trip.minutes} dimmed={trip.isEndOfRouteForUser} />
-	<LiveTripAnimation live={trip.delay != null ? (isOutdated(trip.lastUpdatedTimestamp) ? 'yellow' : 'green') : null} />
+	<LiveTripAnimation live={trip.delay != null ? (now - trip.lastUpdatedTimestamp > OUTDATED_THRESHOLD_MILLIS ? 'yellow' : 'green') : null} />
 </div>
 
 {#if expanded}

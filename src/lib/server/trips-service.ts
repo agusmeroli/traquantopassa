@@ -15,7 +15,9 @@ const cache = new NodeCache();
 // sometimes only happens every 1 minute instead of every 30s
 const tripsCacheDurationSeconds = 29;
 
-const defaultLimit = 15;
+const DEFAULT_LIMIT = 16;
+const EARLY_THRESHOLD_MINS = 5;
+const STOP_AHEAD_THRESHOLD = 2;
 
 export async function getTrips(stop: Stop): Promise<CachedItem<StopDirection>> {
 	const stopId = stop.id;
@@ -28,10 +30,26 @@ export async function getTrips(stop: Stop): Promise<CachedItem<StopDirection>> {
 
 	// Fetch from API
 	logger.info(`Fetching trips for stop ${stopId}`);
-	const apiTrips = await api.getTrips(stopId, defaultLimit);
+	const apiTrips = await api.getTrips(stopId, DEFAULT_LIMIT);
 	const routes = await routesService.getRoutes();
 
-	const trips = await mapApiTrips(apiTrips, routes, stopId);
+	let trips = await mapApiTrips(apiTrips, routes, stopId);
+
+	// Sometimes the wrong id is inserted, and the bus is massively early
+	// this causes the bus to persist even after it passed the users's stop
+	// we also remove it reached the end of the line in case the user is less than 2 stops
+	// before the end of line.
+	trips = trips.filter(trip => {
+		const distanceInStops = trip.userStopSequenceNumber - trip.currentStopSequenceNumber;
+		const isFarAhead = distanceInStops < -STOP_AHEAD_THRESHOLD;
+		const isEndOfLine = trip.currentStopSequenceNumber === trip.stopTimes.length;
+
+		// if it's below a certain threshold it will still be shown as it likely was actually early
+		// it will be removed the the api anyways after that time
+		const isTooEarly = trip.delay != null && trip.delay < -EARLY_THRESHOLD_MINS;
+
+		return !(isTooEarly && (isFarAhead || isEndOfLine));
+	});
 
 	const direction = {
 		name: directionName(stop),
