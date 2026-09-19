@@ -36,7 +36,7 @@
 			</div>
 		{/each}
 
-		{#if !expanded && direction.trips.length > COLLAPSED_LIMIT}
+		{#if !expanded && !alone && direction.trips.length > COLLAPSED_LIMIT}
 			<button
 				class="mt-2 cursor-pointer rounded-md bg-neutral-800 px-3 py-1 text-mid no-underline hover:bg-neutral-700"
 				onclick={() => {
