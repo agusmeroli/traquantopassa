@@ -60,6 +60,8 @@
 					sulla corsa precedente
 				{:else if trip.currentStopSequenceNumber === 0}
 					non ancora partito
+				{:else if trip.currentStopSequenceNumber === trip.stopTimes.length}
+					corsa terminata
 				{:else if distanceInStops < 0}
 					oltre la tua fermata
 				{:else if distanceInStops === 0}

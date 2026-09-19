@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { BadgeAlert as Alert } from '@lucide/svelte';
 	import type { Trip } from '$lib/Trip';
 
 	interface Props {
@@ -60,7 +59,6 @@
 			{:else}
 				<span class="font-semibold italic">Dati non disponibili</span>
 			{/if}
-			<Alert></Alert>
 			{#if trip.lastUpdatedTimestamp !== 0}
 				<span class="font-light">Aggiornato {lastUpdated} fa</span>
 			{/if}
@@ -83,10 +81,7 @@
 							style:background-color={wasPassed ? trip.routeColor : ''}
 						></span>
 
-						<!-- Show the vertical line connecting to the next stop.
-								 Since the trip is removed from the list once the bus reaches the end of route,
-								 there is no need to hide the connecting element if it's the last one. -->
-						{#if wasPassed}
+						{#if wasPassed && i < trip.stopTimes.length - 1}
 							<div class="absolute top-3 h-4 w-1.5" style:background-color={trip.routeColor}></div>
 						{/if}
 					</div>
