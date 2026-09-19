@@ -20,7 +20,8 @@
 	const expandedTrip = $state(tripState);
 	setContext('expandedTrip', expandedTrip);
 
-	const REFRESH_INTERVAL_SECONDS = 30;
+	const REFRESH_INTERVAL = 30 * 1000;
+	const TIMER_UPDATE_INTERVAL = 5 * 1000; 
 	let timer: ReturnType<typeof setInterval>;
 
 	let lastUpdatedAgo = $state("")
@@ -30,9 +31,14 @@
 		clearInterval(timer);
 		if (document.visibilityState != 'hidden') {
 			invalidateAll();
-			timer = setInterval(updateTime, 5 * 1000);
+			timer = setInterval(updateTime, TIMER_UPDATE_INTERVAL);
 		}
 	}
+
+	$effect(() => {
+		details.lastUpdatedAt; // update time when new data loaded
+		updateTime();
+	});
 
 	function updateTime() {
 		const millis = Date.now() - details.lastUpdatedAt.getTime();
@@ -40,13 +46,13 @@
 		// Round to nearest 5s
 		const rounded_seconds = Math.floor(seconds / 5) * 5;
 		lastUpdatedAgo = rounded_seconds > 0 ? `${rounded_seconds}s fa` : "ora";
-		if (seconds > REFRESH_INTERVAL_SECONDS) {
+		if (millis > REFRESH_INTERVAL) {
 			invalidateAll()
 		}
 	}
 
 	onMount(() => {
-		timer = setInterval(updateTime, 5 * 1000);
+		timer = setInterval(updateTime, TIMER_UPDATE_INTERVAL);
 		document.addEventListener('visibilitychange', onVisibilityChange);
 		return () => {
 			clearInterval(timer);
