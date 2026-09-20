@@ -1,15 +1,15 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import type { Trip } from '$lib/Trip';
+	import { getContext, onMount } from 'svelte';
+	import type { TimeState, Trip } from '$lib/Trip';
 
 	interface Props {
 		trip: Trip;
 	}
 
 	let { trip }: Props = $props();
-	
+
 	const stopElements: (HTMLDivElement | undefined)[] = $state([]);
-	let lastUpdated = $state(timeAgo())
+	let timeState: TimeState = getContext('timeState');
 
 	onMount(() => {
 		// On load, show the last passed stop in the middle so it's easier to see.
@@ -21,32 +21,19 @@
 			elementToScroll.scrollIntoView({ block: 'center' });
 		}
 	});
-	
-	$effect(() => {
-		// Don't bother updating periodically if the data is already more than
-		// one minute old.
-		if (Date.now() - trip.lastUpdatedTimestamp >= 60_000) {
-			return;
-		}
-
-		const interval = setInterval(() => {
-			lastUpdated = timeAgo();
-		}, 5_000);
-
-		return () => clearInterval(interval);
-	});
-
 
 	function timeAgo() {
-		const seconds = Math.floor((Date.now() - trip.lastUpdatedTimestamp) / 1000);
-
 		// Round to nearest 5s
-		if (seconds < 60){
-			return `${Math.ceil(seconds / 5) * 5}s`;
+		const seconds = Math.floor((timeState.now - trip.lastUpdatedTimestamp) / 5000) * 5;
+		if (seconds <= 0) {
+			return 'ora';
+		}
+		if (seconds <= 60) {
+			return `${seconds}s fa`;
 		}
 
 		const minutes = Math.floor(seconds / 60);
-		return `${minutes} min`;
+		return `${minutes} min fa`;
 	}
 </script>
 
@@ -60,7 +47,7 @@
 				<span class="font-semibold italic">Dati non disponibili</span>
 			{/if}
 			{#if trip.lastUpdatedTimestamp !== 0}
-				<span class="font-light">Aggiornato {lastUpdated} fa</span>
+				<span class="font-light">Aggiornato {timeAgo()}</span>
 			{/if}
 		</div>
 

@@ -21,3 +21,7 @@ export interface StopTime {
 export interface ExpandedTripState {
 	id: string | null;
 }
+
+export interface TimeState {
+	now: number
+}

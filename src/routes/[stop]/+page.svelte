@@ -7,7 +7,7 @@
 	import LiveTripAnimation from './LiveTripAnimation.svelte';
 	import StopFavoriteButton from '$lib/components/StopFavoriteButton.svelte';
 	import { Flag } from '@lucide/svelte';
-	import type { ExpandedTripState } from '$lib/Trip';
+	import type { ExpandedTripState, TimeState } from '$lib/Trip';
 	import Direction from './Direction.svelte';
 
 	let { data } = $props();
@@ -21,42 +21,50 @@
 	setContext('expandedTrip', expandedTrip);
 
 	const REFRESH_INTERVAL = 30 * 1000;
-	const TIMER_UPDATE_INTERVAL = 5 * 1000; 
+	const TIMER_UPDATE_INTERVAL = 5 * 1000;
 	let timer: ReturnType<typeof setInterval>;
+	const timeStateVal: TimeState = {
+		now: Date.now(),
+	};
+	const timeState = $state(timeStateVal);
+	setContext('timeState', timeState);
 
-	let lastUpdatedAgo = $state("")
-	updateTime()
+	function updateTime() {
+		timeState.now = Date.now();
+		const cacheAge = timeState.now - details.lastUpdatedAt.getTime();
+		if (cacheAge > REFRESH_INTERVAL) {
+			invalidateAll();
+		}
+	}
+
+	function timeAgo() {
+		// Round to nearest 5s
+		const seconds = Math.floor((timeState.now - details.lastUpdatedAt.getTime()) / 5000) * 5;
+		if (seconds <= 0) {
+			return 'ora';
+		}
+		if (seconds <= 60) {
+			return `${seconds}s fa`;
+		}
+
+		const minutes = Math.floor(seconds / 60);
+		return `${minutes} min fa`;
+	}
 
 	function onVisibilityChange() {
 		clearInterval(timer);
 		if (document.visibilityState != 'hidden') {
-			invalidateAll();
+			updateTime();
 			timer = setInterval(updateTime, TIMER_UPDATE_INTERVAL);
 		}
 	}
 
-	$effect(() => {
-		details.lastUpdatedAt; // update time when new data loaded
-		updateTime();
-	});
-
-	function updateTime() {
-		const millis = Date.now() - details.lastUpdatedAt.getTime();
-		const seconds = Math.floor(millis / 1000);
-		// Round to nearest 5s
-		const rounded_seconds = Math.floor(seconds / 5) * 5;
-		lastUpdatedAgo = rounded_seconds > 0 ? `${rounded_seconds}s fa` : "ora";
-		if (millis > REFRESH_INTERVAL) {
-			invalidateAll()
-		}
-	}
-
 	onMount(() => {
-		timer = setInterval(updateTime, TIMER_UPDATE_INTERVAL);
+		onVisibilityChange();
 		document.addEventListener('visibilitychange', onVisibilityChange);
 		return () => {
-			clearInterval(timer);
 			document.removeEventListener('visibilitychange', onVisibilityChange);
+			clearInterval(timer);
 		};
 	});
 </script>
@@ -74,7 +82,7 @@
 		<StopFavoriteButton stopCode={details.code} className="pl-2" />
 	</div>
 	<div class="mt-1 text-center text-sm">
-		aggiornato {lastUpdatedAgo}
+		aggiornato {timeAgo()}
 	</div>
 
 	{#if details.trainStationSlug}

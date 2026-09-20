@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Trip, ExpandedTripState } from '$lib/Trip';
+	import type { Trip, ExpandedTripState, TimeState } from '$lib/Trip';
 	import LiveTripAnimation from './LiveTripAnimation.svelte';
 	import PulsingMinutes from './PulsingMinutes.svelte';
 	import { Flag } from '@lucide/svelte';
@@ -12,6 +12,8 @@
 	}
 	let { trip }: Props = $props();
 
+	const timeState: TimeState = getContext('timeState');
+
 	let expandedTrip = getContext<ExpandedTripState>('expandedTrip');
 	let expanded = $derived(expandedTrip.id === trip.id);
 
@@ -20,7 +22,6 @@
 	}
 
 	const OUTDATED_THRESHOLD_MILLIS = 1000 * 60 * 5;
-	const now =  $state(Date.now());
 
 	let distanceInStops = $derived(trip.userStopSequenceNumber - trip.currentStopSequenceNumber);
 </script>
@@ -84,7 +85,7 @@
 		</span>
 	</div>
 	<PulsingMinutes minutes={trip.minutes} dimmed={trip.isEndOfRouteForUser} />
-	<LiveTripAnimation live={trip.delay != null ? (now - trip.lastUpdatedTimestamp > OUTDATED_THRESHOLD_MILLIS ? 'yellow' : 'green') : null} />
+	<LiveTripAnimation live={trip.delay != null ? (timeState.now - trip.lastUpdatedTimestamp > OUTDATED_THRESHOLD_MILLIS ? 'yellow' : 'green') : null} />
 </div>
 
 {#if expanded}
