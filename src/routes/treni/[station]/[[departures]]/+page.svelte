@@ -19,7 +19,6 @@
 	let showMoreInProgress = $state(false);
 	let limit = $derived(showMore ? Infinity : 5);
 
-
 	const trainState: ExpandedTripState = {
 		id: null,
 	};

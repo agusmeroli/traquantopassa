@@ -23,5 +23,5 @@ export interface ExpandedTripState {
 }
 
 export interface TimeState {
-	now: number
+	now: number;
 }

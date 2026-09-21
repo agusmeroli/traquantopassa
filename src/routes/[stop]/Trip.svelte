@@ -85,7 +85,13 @@
 		</span>
 	</div>
 	<PulsingMinutes minutes={trip.minutes} dimmed={trip.isEndOfRouteForUser} />
-	<LiveTripAnimation live={trip.delay != null ? (timeState.now - trip.lastUpdatedTimestamp > OUTDATED_THRESHOLD_MILLIS ? 'yellow' : 'green') : null} />
+	<LiveTripAnimation
+		live={trip.delay != null
+			? timeState.now - trip.lastUpdatedTimestamp > OUTDATED_THRESHOLD_MILLIS
+				? 'yellow'
+				: 'green'
+			: null}
+	/>
 </div>
 
 {#if expanded}

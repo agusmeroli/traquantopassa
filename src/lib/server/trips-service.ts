@@ -39,7 +39,7 @@ export async function getTrips(stop: Stop): Promise<CachedItem<StopDirection>> {
 	// this causes the bus to persist even after it passed the users's stop
 	// we also remove it reached the end of the line in case the user is less than 2 stops
 	// before the end of line.
-	trips = trips.filter(trip => {
+	trips = trips.filter((trip) => {
 		const distanceInStops = trip.userStopSequenceNumber - trip.currentStopSequenceNumber;
 		const isFarAhead = distanceInStops < -STOP_AHEAD_THRESHOLD;
 		const isEndOfLine = trip.currentStopSequenceNumber === trip.stopTimes.length;
@@ -80,7 +80,7 @@ async function mapApiTrips(apiTrips: api.ApiTrip[], routes: Route[], userStopId:
 
 			let currentStopSequenceNumber = trip.lastSequenceDetection;
 
-			// If a bus is delayed enough that it won't make it to the next route in time, 
+			// If a bus is delayed enough that it won't make it to the next route in time,
 			// it is incorrectly shown as being on the first stop, this sets it to -1 so we can display the information
 			if (trip.stopNext === 0 && delay != null) {
 				currentStopSequenceNumber = -1;

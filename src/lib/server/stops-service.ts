@@ -48,7 +48,7 @@ export async function getStopGroups() {
 			stopGroup = createStopGroup(code, apiStop);
 			stopGroups.push(stopGroup);
 		}
-		
+
 		stopGroup.stops.push(stop);
 		apiStop.routes.forEach((r) => stopGroup.routeIds.add(r.routeId));
 		stopGroup.coordinates = calculateCoordinates(stopGroup.stops);
