@@ -144,6 +144,8 @@ function directionName(stop: Stop): string {
 		return `» Periferia`;
 	} else if (stop.code.endsWith('x')) {
 		return `» Centro`;
+	} else if (stop.code.endsWith('c')){
+		return `Capolinea`
 	} else if (stop.code.endsWith('s')) {
 		return `Sud`;
 	} else if (stop.code.endsWith('n')) {
