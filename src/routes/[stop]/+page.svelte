@@ -51,6 +51,12 @@
 		return `${minutes} min fa`;
 	}
 
+	$effect(() => {
+		// Re-sync timer when data is updated
+		// prevents extra 5s delay before next update
+		onVisibilityChange();
+	});
+
 	function onVisibilityChange() {
 		clearInterval(timer);
 		if (document.visibilityState != 'hidden') {
