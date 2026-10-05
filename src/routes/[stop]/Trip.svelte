@@ -42,13 +42,16 @@
 	</div>
 	<div class="grow overflow-hidden whitespace-nowrap">
 		<span
-			class="flex items-center gap-x-2 overflow-hidden text-lg leading-tight text-ellipsis whitespace-nowrap"
+			class="flex items-center gap-x-2 text-lg leading-tight"
 			class:text-neutral-500={trip.isEndOfRouteForUser}
 			class:font-medium={!trip.isEndOfRouteForUser}
 		>
-			{trip.destination}
+			<span class="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
+				{trip.destination}
+			</span>
+
 			{#if trip.isEndOfRouteForUser}
-				<Flag class="size-4" strokeWidth={2.5} />
+				<Flag class="size-4 shrink-0" strokeWidth={2.5} />
 			{/if}
 		</span>
 		<span class="block text-xs leading-none text-neutral-500">
