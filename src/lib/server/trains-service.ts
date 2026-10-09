@@ -29,6 +29,7 @@ export async function getTrains(
 }
 
 function mapTrains(apiTrains: api.ApiTrain[]): Train[] {
+	const ids = new Set<string>();
 	return apiTrains.map((train) => {
 		let isDelayed = false;
 		let delay = train.delay;
@@ -52,8 +53,15 @@ function mapTrains(apiTrains: api.ApiTrain[]): Train[] {
 
 		train.stopTimes.forEach((stop) => (stop.name = capitalize(stop.name)));
 
+		// No combination of parameters is both stable and guaranteed unique
+		let id = carrier + train.number;
+		while (ids.has(id)) {
+			id += '-';
+		}
+		ids.add(id);
+
 		return {
-			id: carrier + train.number + train.time,
+			id,
 			carrier: carrier,
 			category: category,
 			icon: icon,
